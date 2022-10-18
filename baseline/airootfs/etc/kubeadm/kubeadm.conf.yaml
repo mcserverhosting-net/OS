@@ -1,7 +1,6 @@
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: JoinConfiguration
 nodeRegistration:
-  name: uor-node
   taints: []
   kubeletExtraArgs:
     resolv-conf: /etc/resolv.conf

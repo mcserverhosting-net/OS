@@ -12,3 +12,4 @@ cri-o
 util-linux
 crun
 gdisk
+ntp
