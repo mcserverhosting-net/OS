@@ -25,4 +25,10 @@ jobs:
           echo "hello"
           echo "Hello Again"
           echo "Test hello " >> /tmp/test-hello.txt
+          pwd
           ls -lah
+          ls -lah /github
+          ls -lah /github/home
+          ls -lah /github/workflow
+          ls -lah /__w
+          ls -lah /__e
