@@ -6,6 +6,7 @@ nodeRegistration:
   kubeletExtraArgs:
     resolv-conf: /etc/resolv.conf
     cgroup-driver: systemd
+    node-labels: "net.mcsh.workload/game=true"
 discovery:
   bootstrapToken:
     apiServerEndpoint: cluster.mcsh.red:6443

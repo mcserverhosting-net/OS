@@ -15,5 +15,13 @@ envsubst < /etc/kubeadm/kubeadm.conf.yaml | sponge /etc/kubeadm/kubeadm.conf.yam
 echo $UUID > /etc/hostname
 echo "127.0.0.1 $UUID" > /etc/hosts
 echo "::1 $UUID" >> /etc/hosts
+
+
+modprobe br_netfilter
+echo '1' > /proc/sys/net/ipv4/ip_forward
+
+
+
+
 kubeadm join --config /etc/kubeadm/kubeadm.conf.yaml
 echo "Join operation complete." >> /tmp/log.txt
