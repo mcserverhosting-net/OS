@@ -23,4 +23,7 @@ jobs:
       - name: Echo Hello
         run: |
           mkdir out
+          ls -lah /__w
+          ls -lah /__w/OS
+          ls -lah /__w/OS/baseline
           mkarchiso -v -w /tmp -o out /__w/OS/baseline
