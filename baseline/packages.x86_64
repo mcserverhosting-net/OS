@@ -13,3 +13,5 @@ util-linux
 crun
 gdisk
 ntp
+moreutils
+bpytop
