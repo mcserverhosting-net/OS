@@ -10,7 +10,7 @@ mkfs.ext4 /dev/nvme0n1
 mount /dev/nvme0n1 /mnt
 
 systemctl enable --now crio 
-UUID=$(cat /sys/class/dmi/id/board_serial)
+export UUID=$(cat /sys/class/dmi/id/board_serial)
 envsubst < /etc/kubeadm/kubeadm.conf.yaml | sponge /etc/kubeadm/kubeadm.conf.yaml
 echo $UUID > /etc/hostname
 echo "127.0.0.1 $UUID" > /etc/hosts
