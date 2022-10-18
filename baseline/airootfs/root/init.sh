@@ -5,7 +5,7 @@ echo Init success >> /tmp/log.txt
 
 sgdisk --zap-all /dev/nvme0n1
 #dd if=/dev/zero of=/dev/sda bs=1M count=100 oflag=direct,dsync
-blkdiscard nvme0n1
+blkdiscard /dev/nvme0n1
 
 echo "Making file system on root device" >> /tmp/log.txt
 mkfs.ext4 /dev/nvme0n1
