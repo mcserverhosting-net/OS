@@ -16,4 +16,4 @@ discovery:
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 kubernetesVersion: stable
-controlPlaneEndpoint: nearest.ton618.one:6443
+controlPlaneEndpoint: cluster.mcsh.red:6443
