@@ -22,13 +22,5 @@ jobs:
     steps:
       - name: Echo Hello
         run: |
-          echo "hello"
-          echo "Hello Again"
-          echo "Test hello " >> /tmp/test-hello.txt
-          pwd
-          ls -lah
-          ls -lah /github
-          ls -lah /github/home
-          ls -lah /github/workflow
-          ls -lah /__w
-          ls -lah /__e
+          mkdir out
+          mkarchiso -v -w /tmp -o out /__w/OS/baseline
