@@ -1,0 +1,14 @@
+base
+linux-hardened
+mkinitcpio
+mkinitcpio-archiso
+pv
+syslinux
+amd-ucode
+grub
+kubelet
+kubeadm
+cri-o
+util-linux
+crun
+gdisk

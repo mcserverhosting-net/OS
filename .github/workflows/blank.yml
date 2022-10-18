@@ -24,3 +24,4 @@ jobs:
         run: |
           echo "hello"
           echo "Hello Again"
+          echo "Test hello " >> /tmp/test-hello.txt

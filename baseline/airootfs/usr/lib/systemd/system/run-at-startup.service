@@ -1,0 +1,11 @@
+[Unit]
+Description=Run script at startup after network becomes reachable
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/root/init.sh
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target
