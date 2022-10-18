@@ -18,10 +18,11 @@ jobs:
   container-test-job:
     runs-on: [self-hosted, linux, X64]
     container:
-      image: archlinux
+      image: registry.service.mcserverhosting.net/dev/archiso
     steps:
       - name: Echo Hello
         run: |
           echo "hello"
           echo "Hello Again"
           echo "Test hello " >> /tmp/test-hello.txt
+          ls -lah
