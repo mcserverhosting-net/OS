@@ -25,5 +25,6 @@ jobs:
           mkdir out
           ls -lah /__w
           ls -lah /__w/OS
-          ls -lah /__w/OS/baseline
+          ls -lah /__w/OS/OS
+          ls -lah /__w/OS/OS/baseline
           mkarchiso -v -w /tmp -o out /__w/OS/baseline
