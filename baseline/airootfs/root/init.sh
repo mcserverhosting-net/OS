@@ -12,12 +12,13 @@ mount /dev/nvme0n1 /mnt
 systemctl enable --now crio 
 export UUID=$(cat /sys/class/dmi/id/board_serial)
 envsubst < /etc/kubeadm/kubeadm.conf.yaml | sponge /etc/kubeadm/kubeadm.conf.yaml
-echo $UUID > /etc/hostname
-echo "127.0.0.1 $UUID" > /etc/hosts
-echo "::1 $UUID" >> /etc/hosts
+echo "mcsh-$UUID" > /etc/hostname
+echo "127.0.0.1 mcsh-$UUID" > /etc/hosts
+echo "::1 mcsh-$UUID" >> /etc/hosts
 
 
 modprobe br_netfilter
+modprobe ceph
 echo '1' > /proc/sys/net/ipv4/ip_forward
 
 
