@@ -1,0 +1,19 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+nodeRegistration:
+  name: uor-node
+  taints: []
+  kubeletExtraArgs:
+    resolv-conf: /etc/resolv.conf
+    cgroup-driver: systemd
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: cluster.mcsh.red:6443
+    token: bsmmju.mkwe0ghzyy9fma9b
+    caCertHashes:
+    - sha256:c9b9521f85dcdcc94f7fa1080defc9a6da78770d4546a9d2ed726254e6568f70
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+kubernetesVersion: stable
+controlPlaneEndpoint: nearest.ton618.one:6443
