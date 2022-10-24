@@ -1,4 +1,4 @@
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 kind: JoinConfiguration
 nodeRegistration:
   name: mcsh-$UUID
@@ -14,7 +14,7 @@ discovery:
     caCertHashes:
     - sha256:c9b9521f85dcdcc94f7fa1080defc9a6da78770d4546a9d2ed726254e6568f70
 ---
-apiVersion: kubeadm.k8s.io/v1beta2
+apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: infra.mcsh.red:6443
