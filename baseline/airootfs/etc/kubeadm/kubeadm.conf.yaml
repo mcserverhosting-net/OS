@@ -10,7 +10,7 @@ nodeRegistration:
 discovery:
   bootstrapToken:
     apiServerEndpoint: infra.mcsh.red:6443
-    token: bsmmju.mkwe0ghzyy9fma9b
+    token: yullqi.oe6nh2ce60c0afc4
     caCertHashes:
     - sha256:c9b9521f85dcdcc94f7fa1080defc9a6da78770d4546a9d2ed726254e6568f70
 ---
@@ -18,3 +18,6 @@ apiVersion: kubeadm.k8s.io/v1beta2
 kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: infra.mcsh.red:6443
+
+#Even in changing these definitions and the kubeadm-config file there still lies something that is telling iboutu 192.168.8.1...i remember it was uhhhh...potential y cluster api endpoint settings. but thats here. but that isnt read in join config. 
+# So is it perm in cluster config? controlPlaneEndpoint
