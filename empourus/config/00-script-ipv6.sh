@@ -1,0 +1,6 @@
+modprobe ip6_tables
+modprobe ip_tables
+modprobe ip6table_mangle
+modprobe ip6table_raw
+modprobe ip6table_filter
+modprobe xt_socket

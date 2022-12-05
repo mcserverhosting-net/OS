@@ -14,12 +14,15 @@ collection:
     - file: /mnt/iso/syslinux/*
       attributes:
         boot: default
-    - file: empourus/config/script-init.sh
+    - file: empourus/config/init.sh
       attributes:
         script: default
-    - file: empourus/config/script-large-ram.sh
+    - file: empourus/config/large-ram.sh
       attributes:
         script: large-ram
+    - file: empourus/config/00-ipv6.sh
+      attributes:
+        script: ipv6
     - file: empourus/config/kubeadm/kubeadm-config-office.yaml
       attributes:
         cluster: office
