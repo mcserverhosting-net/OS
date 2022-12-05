@@ -14,5 +14,5 @@ empourus --loglevel=debug build collection empourus registry.service.mcserverhos
 sudo umount $PWD/empourus/boot
 
 #Push the collection
-empourus --loglevel=debug push registry.service.mcserverhosting.net/dev/os:latest --insecure --plain-http
+empourus --loglevel=debug push registry.service.mcserverhosting.net/dev/os:latest
 
