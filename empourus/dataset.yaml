@@ -2,34 +2,34 @@ kind: DataSetConfiguration
 apiVersion: client.uor-framework.io/v1alpha1
 collection:
   files:
-    - file: /mnt/iso/arch/*
+    - file: arch/*
       attributes:
         boot: default
-    - file: /mnt/iso/arch/boot/x86_64/initramfs-linux-hardened.img
+    - file: arch/boot/x86_64/initramfs-linux-hardened.img
       attributes:
         boot: default
-    - file: /mnt/iso/EFI/*
+    - file: EFI/*
       attributes:
         boot: default
-    - file: /mnt/iso/syslinux/*
+    - file: syslinux/*
       attributes:
         boot: default
-    - file: empourus/config/init.sh
+    - file: config/init.sh
       attributes:
         script: default
-    - file: empourus/config/large-ram.sh
+    - file: config/large-ram.sh
       attributes:
         script: large-ram
-    - file: empourus/config/00-ipv6.sh
+    - file: config/00-ipv6.sh
       attributes:
         script: ipv6
-    - file: empourus/config/kubeadm/kubeadm-config-office.yaml
+    - file: config/kubeadm/kubeadm-config-office.yaml
       attributes:
         cluster: office
-    - file: empourus/config/kubeadm/kubeadm-config-datacenter.yaml
+    - file: config/kubeadm/kubeadm-config-datacenter.yaml
       attributes:
         cluster: datacenter
-    - file: empourus/config/kubeadm/kubeadm-config-home.yaml
+    - file: config/kubeadm/kubeadm-config-home.yaml
       attributes:
         cluster: home
 

@@ -1,0 +1,23 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+nodeRegistration:
+  name: office-$UUID
+  taints: []
+  kubeletExtraArgs:
+    resolv-conf: /etc/resolv.conf
+    cgroup-driver: systemd
+    node-labels: "net.mcsh.workload/office=true"
+    cpu-manager-policy: static
+    reserved-cpus: "0"
+    fail-swap-on: "false"
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: nearest.ton618.one:6443
+    token: 36jixe.98awhys9sjzzzy97
+    caCertHashes:
+    - sha256:d4c49500157420962b8a1287b9e23957c0e89b3095c7c50563ed1f21b5a61424
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: stable
+controlPlaneEndpoint: nearest.ton618.one:6443
