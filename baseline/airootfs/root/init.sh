@@ -2,8 +2,10 @@
 set -e
 echo Init success >> /tmp/log.txt
 
+
+mkdir /config
 # Mount the second device
-mount /dev/sda2 /config
+mount -o ro,noload /dev/sda2 /config
 source /config/*.sh
 
 echo "
