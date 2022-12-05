@@ -11,7 +11,8 @@ kubeadm
 cri-o
 util-linux
 crun
+networkmanager
 gdisk
 ntp
 moreutils
-bpytop
+lvm2

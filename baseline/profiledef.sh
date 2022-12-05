@@ -18,4 +18,5 @@ airootfs_image_tool_options=('-zlz4hc,12' -E ztailpacking)
 file_permissions=(
   ["/etc/shadow"]="0:0:400"
   ["/root/init.sh"]="0:0:755"
+  ["/usr/bin/empourus"]="0:0:755"
 )
