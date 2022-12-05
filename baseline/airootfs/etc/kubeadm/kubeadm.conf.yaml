@@ -1,23 +1,26 @@
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: JoinConfiguration
 nodeRegistration:
-  name: mcsh-$UUID
+  name: home-$UUID
   taints: []
   kubeletExtraArgs:
     resolv-conf: /etc/resolv.conf
     cgroup-driver: systemd
-    node-labels: "net.mcsh.workload/game=true"
+    node-labels: "net.sfxworks.workload/home=true"
+    cpu-manager-policy: static
+    reserved-cpus: "0"
+    fail-swap-on: "false"
 discovery:
   bootstrapToken:
-    apiServerEndpoint: infra.mcsh.red:6443
-    token: yullqi.oe6nh2ce60c0afc4
+    apiServerEndpoint: 192.168.5.1:6443
+    token: u67ii0.wu3zzerkpaoo8zce
     caCertHashes:
-    - sha256:c9b9521f85dcdcc94f7fa1080defc9a6da78770d4546a9d2ed726254e6568f70
+    - sha256:37a0bbbb265ce1ba54c16d25ca268a253dbf07a604ffdcbb9d23b9147b4717e9
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: stable
-controlPlaneEndpoint: infra.mcsh.red:6443
+controlPlaneEndpoint: 192.168.5.1:6443
 
 #Even in changing these definitions and the kubeadm-config file there still lies something that is telling iboutu 192.168.8.1...i remember it was uhhhh...potential y cluster api endpoint settings. but thats here. but that isnt read in join config. 
 # So is it perm in cluster config? controlPlaneEndpoint
