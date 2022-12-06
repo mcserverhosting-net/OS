@@ -13,6 +13,8 @@ jobs:
           registry: registry.service.mcserverhosting.net
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+      - name: where tf am I
+        run: ls -lah && pwd
       - name: Install empourus
         run: wget https://github.com/uor-framework/uor-client-go/releases/download/v0.3.0/uor-client-go-linux-amd64 && chmod +x uor-client-go-linux-amd64
       - name: Run iso make script
