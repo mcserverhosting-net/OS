@@ -21,6 +21,12 @@ jobs:
         run: wget https://github.com/uor-framework/uor-client-go/releases/download/v0.3.0/uor-client-go-linux-amd64 && chmod +x uor-client-go-linux-amd64
       - name: Run iso make script
         run: docker run --privileged -v $PWD/baseline:/profile registry.service.mcserverhosting.net/library/archiso:latest mkarchiso -v -w /tmp -o /profile/out /profile -quiet=y
+      - name: Mount Image
+        id: mount-image
+        uses: damianperera/mount-image-action@v1
+        with:
+          imagePath: $GITHUB_WORKSPACE/baseline/out/archlinux-baseline-2022.12.05-x86_64.iso
+          mountPoint: $GITHUB_WORKSPACE/empourus/boot
       - name: Mount ISO
         run: mkdir $PWD/empourus/boot && sudo mount -o loop $PWD/baseline/out/* $PWD/empourus/boot
       - name: Build collection
