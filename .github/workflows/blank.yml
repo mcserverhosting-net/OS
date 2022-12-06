@@ -22,7 +22,7 @@ jobs:
       - name: Run iso make script
         run: docker run --privileged -v $PWD/baseline:/profile registry.service.mcserverhosting.net/library/archiso:latest mkarchiso -v -w /tmp -o /profile/out /profile -quiet=y
       - name: Mount ISO
-        run: mkdir $PWD/empourus/boot && mount -o loop $PWD/baseline/out/* $PWD/empourus/boot
+        run: mkdir $PWD/empourus/boot && sudo mount -o loop $PWD/baseline/out/* $PWD/empourus/boot
       - name: Build collection
         run: ./uor-client-go-linux-amd64 --loglevel=debug build collection empourus registry.service.mcserverhosting.net/dev/os:latest --dsconfig $PWD/empourus/dataset.yaml
       - name: Push collection
