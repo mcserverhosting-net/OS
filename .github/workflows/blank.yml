@@ -13,6 +13,10 @@ jobs:
           registry: registry.service.mcserverhosting.net
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+      - name: checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: where tf am I
         run: ls -lah && pwd
       - name: Install empourus
