@@ -7,5 +7,20 @@ jobs:
     name: Build ISO
     runs-on: ubuntu-latest
     steps:
-      - name: Run make script
-        run: sh make.sh
+      - name: Login to Harbor Registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.service.mcserverhosting.net
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+      - name: Install empourus
+        run: wget https://github.com/uor-framework/uor-client-go/releases/download/v0.3.0/uor-client-go-linux-amd64 && chmod +x uor-client-go-linux-amd64
+      - name: Run iso make script
+        run: docker run --privileged -v ./baseline:/profile registry.service.mcserverhosting.net/library/archiso:latest mkarchiso -v -w /tmp -o /profile/out /profile -quiet=y
+      - name: Mount ISO
+        run: mount -o loop $PWD/baseline/out/* $PWD/empourus/boot
+      - name: Build collection
+        run: ./uor-client-go-linux-amd64 --loglevel=debug build collection empourus registry.service.mcserverhosting.net/dev/os:latest --dsconfig empourus/dataset.yaml
+      - name: Push collection
+        run: ./uor-client-go-linux-amd64 --loglevel=debug push registry.service.mcserverhosting.net/dev/os:latest
+
