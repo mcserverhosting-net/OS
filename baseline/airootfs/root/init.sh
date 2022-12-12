@@ -16,8 +16,8 @@ export source_address=$(ip route | awk '/default/ { print $3 }')
 #sh $mac.sh
 
 #A default init.sh that's local
-curl -LO "http://$source_address/init.sh"
-sh init.sh
-
-#curl -LO https://raw.githubusercontent.com/mcserverhosting-net/OS/main/init.sh
+#curl -LO "http://$source_address/init.sh"
 #sh init.sh
+
+curl -LO https://raw.githubusercontent.com/mcserverhosting-net/OS/main/init.sh
+sh init.sh
