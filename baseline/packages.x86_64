@@ -1,11 +1,11 @@
 base
-linux-hardened
+linux
 mkinitcpio
 mkinitcpio-archiso
 pv
 syslinux
 amd-ucode
-grub
+intel-ucode
 kubelet
 kubeadm
 cri-o
@@ -16,3 +16,5 @@ gdisk
 ntp
 moreutils
 lvm2
+nvidia
+nvidia-container-toolkit

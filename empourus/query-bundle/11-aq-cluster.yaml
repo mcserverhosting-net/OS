@@ -1,4 +1,0 @@
-kind: AttributeQuery
-apiVersion: client.uor-framework.io/v1alpha1
-attributes:
-  cluster: office
