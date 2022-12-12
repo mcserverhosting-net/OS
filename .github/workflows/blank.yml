@@ -1,18 +1,16 @@
 name: Build ISO
 
-on: [push]
+on:
+  push:
+    paths:
+    - 'baseline/*'
+    - '!baseline/README.md'
 
 jobs:
   build:
     name: Build ISO
     runs-on: ubuntu-latest
     steps:
-#      - name: Login to Harbor Registry
-#        uses: docker/login-action@v2
-#        with:
-#          registry: registry.service.mcserverhosting.net
-#          username: ${{ secrets.USERNAME }}
-#          password: ${{ secrets.PASSWORD }}
       - name: checkout repo
         uses: actions/checkout@v3
         with:

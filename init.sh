@@ -24,6 +24,7 @@ fi
 
 mkfs.ext4 $DISK
 mount $DISK /mnt
+mount $DISK /var/log
 mkdir /mnt/tmp
 
 export UUID=$(cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address | sed s/://g )
