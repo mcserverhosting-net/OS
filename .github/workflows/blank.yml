@@ -23,4 +23,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: archiso
-          path: $PWD/baseline/out/
+          path: baseline/out/
+          if-no-files-found: error
