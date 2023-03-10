@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubeadm-config
+type: Opaque
+stringData:
+  kubeadm-config.yaml: |-
+    apiVersion: kubeadm.k8s.io/v1beta3
+    kind: JoinConfiguration
+    nodeRegistration:
+      name: mcsh-${UUID//[-]/_}
+      taints: []
+      kubeletExtraArgs:
+        resolv-conf: /etc/resolv.conf
+        cgroup-driver: systemd
+        node-labels: "net.mcserverhosting.node/generic=true"
+        cpu-manager-policy: static
+        reserved-cpus: "0"
+        fail-swap-on: "false"
+    discovery:
+      bootstrapToken:
+        apiServerEndpoint: "nearest.ton618.one:6443"
+        token: ""
+        caCertHashes:
+        - "sha256:"
+    ---
+    apiVersion: kubeadm.k8s.io/v1beta3
+    kind: ClusterConfiguration
+    kubernetesVersion: stable
+    controlPlaneEndpoint: "nearest.ton618.one:6443"
