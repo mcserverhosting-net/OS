@@ -5,9 +5,9 @@ on:
   schedule:
     - cron: '0 0 * * 0'
   # Trigger the workflow on push events to the main branch
-  push:
-    branches:
-      - main
+#  push:
+#    branches:
+#      - main
 
 jobs:
   build-and-push:

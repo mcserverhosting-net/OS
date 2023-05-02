@@ -2,9 +2,13 @@ name: Build ISO
 
 on:
   push:
-    paths:
-    - 'baseline/*'
-    - '!baseline/README.md'
+#    paths:
+#    - 'baseline/*'
+#    - '!baseline/README.md'
+    branches:
+      - main
+
+
 
 jobs:
   build:
