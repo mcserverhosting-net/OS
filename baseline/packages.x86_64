@@ -17,5 +17,7 @@ ntp
 moreutils
 lvm2
 openssh
+htop
+bpytop
 #nvidia
 #nvidia-container-toolkit
