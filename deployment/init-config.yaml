@@ -65,6 +65,7 @@ data:
       mkfs.ext4 "$DISK"
     fi
     
+    mkdir -P /var/log/pods /var/log/containers
     # Mount the disk to /mnt and /var/log
     mount "$DISK" /mnt
     mount "$DISK" /var/log/pods
