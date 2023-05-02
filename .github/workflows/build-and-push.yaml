@@ -36,4 +36,4 @@ jobs:
         context: .
         push: true
         platforms: linux/amd64,linux/arm64
-        tags: ghcr.io/mcserverhosting-net/OS/archiso:latest
+        tags: ghcr.io/mcserverhosting-net/os/archiso:latest
