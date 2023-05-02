@@ -27,3 +27,14 @@ jobs:
           name: archiso
           path: baseline/out/
           if-no-files-found: error
+      - name: Copy ISO to remote server
+        env:
+          REMOTE_HOST: 208.73.137.196
+          REMOTE_USER: root
+          REMOTE_PATH: /srv/nfs/iso
+          SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
+        run: |
+          echo "$SSH_KEY" > private_key
+          chmod 600 private_key
+          scp -i private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r baseline/out/*.iso $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
+          rm -f private_key
