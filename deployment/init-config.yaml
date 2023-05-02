@@ -73,7 +73,13 @@ data:
     mkdir /mnt/tmp
     
     #export UUID=$(cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address | sed s/://g )
-    export UUID=$(cat /sys/class/dmi/id/board_serial | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | head -c 63)
+    #export UUID=$(cat /sys/class/dmi/id/board_serial | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | head -c 63)
+    if [ -s /sys/class/dmi/id/board_serial ]; then
+        export UUID=$(cat /sys/class/dmi/id/board_serial | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | head -c 63)
+    else
+        DEFAULT_IFACE=$(ip -4 route get 8.8.8.8 | awk '/dev/ {print $5}')
+        export UUID=$(cat /sys/class/net/$DEFAULT_IFACE/address | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | head -c 63)
+    fi
     
     #Gateway IP to get kubeadm config by default
     #export GW_IP=$(ip route | awk '/default/ { print $3 }')
