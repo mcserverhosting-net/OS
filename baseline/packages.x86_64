@@ -17,6 +17,7 @@ ntp
 moreutils
 lvm2
 openssh
+parted
 htop
 bpytop
 #nvidia
