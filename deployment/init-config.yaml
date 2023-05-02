@@ -65,22 +65,23 @@ data:
       mkfs.ext4 "$DISK"
     fi
     
-    mkdir -P /var/log/pods /var/log/containers
+    mkdir -p /var/log/pods /var/log/containers
     # Mount the disk to /mnt and /var/log
     mount "$DISK" /mnt
     mount "$DISK" /var/log/pods
     mount "$DISK" /var/log/containers
     mkdir /mnt/tmp
     
-    export UUID=$(cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address | sed s/://g )
+    #export UUID=$(cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address | sed s/://g )
+    export UUID=$(cat /sys/class/dmi/id/board_serial | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | head -c 63)
     
     #Gateway IP to get kubeadm config by default
     #export GW_IP=$(ip route | awk '/default/ { print $3 }')
     export GW_IP="192.168.9.9"
-    curl -LO "http://$GW_IP/kubeadm.conf.yaml"
+    curl -LO "http://$GW_IP/kubeadm-config.yaml"
     
-    cp kubeadm.conf.yaml /etc/kubeadm/kubeadm.conf.yaml
-    envsubst < /etc/kubeadm/kubeadm.conf.yaml | sponge /etc/kubeadm/kubeadm.conf.yaml
+    cp kubeadm-config.yaml /etc/kubeadm/kubeadm-config.yaml
+    envsubst < /etc/kubeadm/kubeadm-config.yaml | sponge /etc/kubeadm/kubeadm-config.yaml
     echo "mcsh-$UUID" > /etc/hostname
     echo "127.0.0.1 mcsh-$UUID" > /etc/hosts
     echo "::1 mcsh-$UUID" >> /etc/hosts
@@ -103,5 +104,5 @@ data:
     echo '1' > /proc/sys/net/ipv4/ip_forward
     
     systemctl enable --now crio 
-    kubeadm join --config /etc/kubeadm/kubeadm.conf.yaml --v=5
+    kubeadm join --config /etc/kubeadm/kubeadm-config.yaml --v=5
     echo "Join operation complete." >> /tmp/log.txt
