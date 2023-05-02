@@ -1,5 +1,5 @@
 base
-linux
+linux-hardened
 mkinitcpio
 mkinitcpio-archiso
 pv
