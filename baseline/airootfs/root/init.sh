@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 echo Init success >> /tmp/log.txt
+systemctl enable --now sshd
 
 sleep 10s
 
@@ -8,7 +9,7 @@ sleep 10s
 #export source_address=$(ip route | awk '/default/ {print $3}' | awk -F '.' '{print $1 "." $2 "." $3 "." $4+10}')
 
 #Gateway IP. Example: 192.168.0.1
-export source_address=$(ip route | awk '/default/ { print $3 }')
+#export source_address=$(ip route | awk '/default/ { print $3 }')
 
 #Script by MAC vs default init
 #export mac=$(cat /sys/class/net/$(ip route show default | awk '/default/ {print $5}')/address | sed s/://g )
@@ -16,8 +17,8 @@ export source_address=$(ip route | awk '/default/ { print $3 }')
 #sh $mac.sh
 
 #A default init.sh that's local
-#curl -LO "http://$source_address/init.sh"
-#sh init.sh
-
-curl -LO https://raw.githubusercontent.com/mcserverhosting-net/OS/main/init.sh
+curl -LO "http://192.168.9.9/init.sh"
 sh init.sh
+
+#curl -LO https://raw.githubusercontent.com/mcserverhosting-net/OS/main/init.sh
+#sh init.sh

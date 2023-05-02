@@ -1,0 +1,2 @@
+#Temporary until s3 dns patch
+192.168.8.3 rook-ceph-rgw-s3-store.rook-ceph.svc.red.mcsh

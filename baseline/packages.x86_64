@@ -16,5 +16,6 @@ gdisk
 ntp
 moreutils
 lvm2
-nvidia
-nvidia-container-toolkit
+openssh
+#nvidia
+#nvidia-container-toolkit
