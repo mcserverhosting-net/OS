@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run iso make script
-        run: docker run --privileged -v $PWD/baseline:/profile -v $PWD/customrepo:/customrepo registry.service.mcserverhosting.net/library/archiso:latest mkarchiso -v -w /tmp -o /profile/out /profile
+        run: docker run --privileged -v $PWD/baseline:/profile -v $PWD/customrepo:/customrepo ghcr.io/mcserverhosting-net/OS/archiso:latest mkarchiso -v -w /tmp -o /profile/out /profile
       - name: Archive ISO artifact
         uses: actions/upload-artifact@v3
         with:
