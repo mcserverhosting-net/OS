@@ -1,5 +1,5 @@
 base
-linux-lts
+linux
 mkinitcpio
 mkinitcpio-archiso
 pv
@@ -18,6 +18,7 @@ moreutils
 lvm2
 openssh
 parted
+nbd
 htop
 bpytop
 #nvidia
