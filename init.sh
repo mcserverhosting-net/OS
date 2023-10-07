@@ -43,10 +43,6 @@ mkdir -p /tmp/kubernetes
 export UUID=$(blkid -s UUID -o value /dev/sda1)
 export GATEWAY_IP=192.168.1.1
 
-# Download and copy kubeadm configuration file
-wget https://raw.githubusercontent.com/kubernetes/kubernetes/master/cmd/kubeadm/app/apis/kubeadm/v1beta2/types.go -O /tmp/kubernetes/types.go
-cp /tmp/kubernetes/types.go /etc/kubeadm/types.go
-
 # Update hostname and hosts files
 echo "k8s-node-$(uuidgen | cut -c-5)" > /etc/hostname
 echo "127.0.0.1 localhost" > /etc/hosts
@@ -60,6 +56,9 @@ sysctl net.ipv4.ip_forward=1
 
 # Start crio service
 systemctl start crio
+
+# Install kubeadm using pacman
+pacman -Syu kubeadm
 
 # Join Kubernetes cluster
 kubeadm join --config /etc/kubeadm/types.go
