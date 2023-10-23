@@ -8,7 +8,7 @@ nodeRegistration:
     cgroup-driver: systemd
     node-labels: "net.mcserverhosting.node/ephemeral=true,kubernetes.io/os=MCSH"
     cpu-manager-policy: static
-    memory-manager-policy: static
+    memory-manager-policy: Static
     reserved-cpus: "0"
     reserved-memory: "0:memory=1Gi"
     fail-swap-on: "false"
