@@ -19,6 +19,8 @@ lvm2
 openssh
 parted
 nbd
+avahi
+nss-mdns
 htop
 bpytop
 #nvidia

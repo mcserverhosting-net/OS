@@ -8,6 +8,9 @@ Type=simple
 RemainAfterExit=yes
 ExecStart=/root/init.sh
 TimeoutStartSec=0
+StandardOutput=tty
+TTYPath=/dev/tty1
+TTYReset=yes
 
 [Install]
 WantedBy=default.target

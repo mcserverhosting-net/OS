@@ -1,23 +1,23 @@
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: JoinConfiguration
 nodeRegistration:
-  name: mcsh-$UUID
+  name: ephemeral-$UUID
   taints: []
   kubeletExtraArgs:
     resolv-conf: /etc/resolv.conf
     cgroup-driver: systemd
-    node-labels: "net.mcserverhosting.node/generic=true"
+    node-labels: "net.mcserverhosting.node/ephemeral=true,kubernetes.io/os=MCSH"
     cpu-manager-policy: static
+    memory-manager-policy: static
     reserved-cpus: "0"
+    reserved-memory: "0:memory=1Gi"
     fail-swap-on: "false"
+    max-pods: "220"
+    seccomp-default: "true"
+    feature-gates: "SeccompDefault=true,NodeSwap=true"
 discovery:
   bootstrapToken:
-    apiServerEndpoint: 
-    token: 
+    apiServerEndpoint: $ENDPOINT
+    token: $TOKEN
     caCertHashes:
-    - 
----
-apiVersion: kubeadm.k8s.io/v1beta3
-kind: ClusterConfiguration
-kubernetesVersion: stable
-controlPlaneEndpoint: 
+    - $CERTHASH
