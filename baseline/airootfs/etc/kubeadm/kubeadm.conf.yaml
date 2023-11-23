@@ -15,6 +15,7 @@ nodeRegistration:
     max-pods: "220"
     seccomp-default: "true"
     feature-gates: "SeccompDefault=true,NodeSwap=true"
+    root-dir: /mnt/kubelet
 discovery:
   bootstrapToken:
     apiServerEndpoint: $ENDPOINT
