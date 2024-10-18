@@ -1,5 +1,6 @@
 base
-linux
+linux-lts
+linux-lts-headers
 mkinitcpio
 mkinitcpio-archiso
 pv
@@ -23,5 +24,17 @@ avahi
 nss-mdns
 htop
 bpytop
+btop
+open-iscsi
+xfsprogs
+nano
+vim
+vi
+curl
+wget
 #nvidia
 #nvidia-container-toolkit
+amdgpu-pro-installer-debug
+rocm-hip-sdk
+rocm-opencl-sdk
+radeontop

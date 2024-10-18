@@ -8,16 +8,18 @@ nodeRegistration:
     cgroup-driver: systemd
     node-labels: "net.mcserverhosting.node/ephemeral=true,kubernetes.io/os=MCSH"
     cpu-manager-policy: static
-    memory-manager-policy: static
+#    memory-manager-policy: Static
     reserved-cpus: "0"
-    reserved-memory: "0:memory=1Gi"
+    kube-reserved: "cpu=1,memory=4Gi"
+    system-reserved: "cpu=1,memory=2Gi"
+#    reserved-memory: "0:memory=4196Mi,hugepages-1M=2Gi"
     fail-swap-on: "false"
     max-pods: "220"
     seccomp-default: "true"
-    feature-gates: "SeccompDefault=true,NodeSwap=true"
+    feature-gates: "NodeSwap=true,MemoryManager=true"
 discovery:
   bootstrapToken:
-    apiServerEndpoint: $ENDPOINT
-    token: $TOKEN
+    apiServerEndpoint 
+    token: 
     caCertHashes:
-    - $CERTHASH
+    - 
