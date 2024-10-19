@@ -16,9 +16,11 @@ FEATURE_LEVELS = x86-64-v2 x86-64-v3 x86-64-v4
 # Kubernetes version
 K8S_VERSION ?= $(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | tr -d 'v')
 
-NVIDIA_PACKAGES = nvidia-dkms nvidia-container-toolkit
-AMD_PACKAGES = amdgpu-pro-installer-debug rocm-hip-sdk rocm-opencl-sdk radeontop
-UNIX_TOOLS = openssh nano vim vi curl wget htop bpytop btop
+# Packages
+NVIDIA_PACKAGES_LIST = nvidia-dkms nvidia-container-toolkit
+AMD_PACKAGES_LIST = amdgpu-pro-installer-debug rocm-hip-sdk rocm-opencl-sdk radeontop
+UNIX_TOOLS_LIST = openssh nano vim vi curl wget htop bpytop btop
+
 
 ENABLE_NVIDIA ?= 0
 ENABLE_AMD ?= 0
@@ -58,40 +60,24 @@ template-kubeadm:
 # Generate package list based on enabled features
 package-list:
 	@echo "Generating package list..."
-	@cp baseline/packages.x86_64.template baseline/packages.x86_64.tmp
-
-	# Use awk to process the template and expand package lists
-	@awk -v linux_pkg="$(LINUX)" \
-	     -v unix_tools="$(UNIX_TOOLS)" \
-	     -v enable_nvidia="$(ENABLE_NVIDIA)" \
-	     -v nvidia_pkgs="$(NVIDIA_PACKAGES)" \
-	     -v enable_amd="$(ENABLE_AMD)" \
-	     -v amd_pkgs="$(AMD_PACKAGES)" \
-	     '{
-	          if ($$0 == "${LINUX}") {
-	              print linux_pkg;
-	          } else if ($$0 == "${LINUX}-headers") {
-	              print linux_pkg "-headers";
-	          } else if ($$0 == "${UNIX_TOOLS}") {
-	              split(unix_tools, arr, " ");
-	              for (i in arr) print arr[i];
-	          } else if ($$0 == "${NVIDIA_PACKAGES}") {
-	              if (enable_nvidia == "1") {
-	                  split(nvidia_pkgs, arr, " ");
-	                  for (i in arr) print arr[i];
-	              }
-	          } else if ($$0 == "${AMD_PACKAGES}") {
-	              if (enable_amd == "1") {
-	                  split(amd_pkgs, arr, " ");
-	                  for (i in arr) print arr[i];
-	              }
-	          } else {
-	              print $$0;
-	          }
-	      }' baseline/packages.x86_64.tmp > baseline/packages.x86_64
-
-	# Remove temporary file
-	@rm baseline/packages.x86_64.tmp
+	@( \
+		export LINUX="$(LINUX)"; \
+		if [ "$(ENABLE_NVIDIA)" -eq "1" ]; then \
+		  NVIDIA_PACKAGES="$$(printf '%s\n' $(NVIDIA_PACKAGES_LIST))"; \
+		else \
+		  NVIDIA_PACKAGES=""; \
+		fi; \
+		if [ "$(ENABLE_AMD)" -eq "1" ]; then \
+		  AMD_PACKAGES="$$(printf '%s\n' $(AMD_PACKAGES_LIST))"; \
+		else \
+		  AMD_PACKAGES=""; \
+		fi; \
+		UNIX_TOOLS="$$(printf '%s\n' $(UNIX_TOOLS_LIST))"; \
+		export NVIDIA_PACKAGES; \
+		export AMD_PACKAGES; \
+		export UNIX_TOOLS; \
+		envsubst < baseline/packages.x86_64.template > baseline/packages.x86_64; \
+	)
 
 # Ensure SSH keys have correct permissions
 ssh-keys:
