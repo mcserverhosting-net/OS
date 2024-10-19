@@ -56,35 +56,42 @@ template-kubeadm:
 	@sed -i 's|{{NODE_LABELS}}|$(NODE_LABELS)|g' baseline/airootfs/etc/kubeadm/kubeadm.conf.yaml
 
 # Generate package list based on enabled features
-# Generate package list based on enabled features
 package-list:
 	@echo "Generating package list..."
 	@cp baseline/packages.x86_64.template baseline/packages.x86_64.tmp
 
-	# Set up environment variables for envsubst
-	@export LINUX="$(LINUX)"; \
-	export UNIX_TOOLS="$(UNIX_TOOLS)"; \
-	export NVIDIA_PACKAGES="$(NVIDIA_PACKAGES)"; \
-	export AMD_PACKAGES="$(AMD_PACKAGES)"; \
-	export ENABLE_NVIDIA="$(ENABLE_NVIDIA)"; \
-	export ENABLE_AMD="$(ENABLE_AMD)"; \
-	\
-	envsubst < baseline/packages.x86_64.tmp > baseline/packages.x86_64.tmp2; \
-	\
-	# Process conditional inclusion of packages
-	if [ "$(ENABLE_NVIDIA)" -eq "1" ]; then \
-	  sed '/^#NVIDIA_PACKAGES#/d' baseline/packages.x86_64.tmp2 > baseline/packages.x86_64.tmp3; \
-	else \
-	  sed '/^#NVIDIA_PACKAGES#/,/^#END_NVIDIA_PACKAGES#/d' baseline/packages.x86_64.tmp2 > baseline/packages.x86_64.tmp3; \
-	fi; \
-	if [ "$(ENABLE_AMD)" -eq "1" ]; then \
-	  sed '/^#AMD_PACKAGES#/d' baseline/packages.x86_64.tmp3 > baseline/packages.x86_64; \
-	else \
-	  sed '/^#AMD_PACKAGES#/,/^#END_AMD_PACKAGES#/d' baseline/packages.x86_64.tmp3 > baseline/packages.x86_64; \
-	fi; \
-	rm baseline/packages.x86_64.tmp baseline/packages.x86_64.tmp2 baseline/packages.x86_64.tmp3
-	cat baseline/packages.x86_64
+	# Use awk to process the template and expand package lists
+	@awk -v linux_pkg="$(LINUX)" \
+	     -v unix_tools="$(UNIX_TOOLS)" \
+	     -v enable_nvidia="$(ENABLE_NVIDIA)" \
+	     -v nvidia_pkgs="$(NVIDIA_PACKAGES)" \
+	     -v enable_amd="$(ENABLE_AMD)" \
+	     -v amd_pkgs="$(AMD_PACKAGES)" \
+	     '{
+	          if ($$0 == "${LINUX}") {
+	              print linux_pkg;
+	          } else if ($$0 == "${LINUX}-headers") {
+	              print linux_pkg "-headers";
+	          } else if ($$0 == "${UNIX_TOOLS}") {
+	              split(unix_tools, arr, " ");
+	              for (i in arr) print arr[i];
+	          } else if ($$0 == "${NVIDIA_PACKAGES}") {
+	              if (enable_nvidia == "1") {
+	                  split(nvidia_pkgs, arr, " ");
+	                  for (i in arr) print arr[i];
+	              }
+	          } else if ($$0 == "${AMD_PACKAGES}") {
+	              if (enable_amd == "1") {
+	                  split(amd_pkgs, arr, " ");
+	                  for (i in arr) print arr[i];
+	              }
+	          } else {
+	              print $$0;
+	          }
+	      }' baseline/packages.x86_64.tmp > baseline/packages.x86_64
 
+	# Remove temporary file
+	@rm baseline/packages.x86_64.tmp
 
 # Ensure SSH keys have correct permissions
 ssh-keys:
