@@ -31,11 +31,7 @@ OUTPUT_DIR = baseline/airootfs/usr/local/bin
 
 INCLUDE_OPENSSH := $(shell grep -w 'openssh' baseline/packages.x86_64 >/dev/null && echo 1 || echo 0)
 
-# Ensure init.sh is executable
-permissions:
-	@chmod +x baseline/airootfs/root/init.sh
-
-all: template-linux template-kubeadm permissions ssh-keys package-list init-script ntp-conf $(addprefix build-iso-,$(FEATURE_LEVELS))
+all: template-linux template-kubeadm ssh-keys package-list init-script ntp-conf $(addprefix build-iso-,$(FEATURE_LEVELS))
 
 # Process kubeadm.conf.yaml.template
 template-kubeadm:
