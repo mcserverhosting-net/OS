@@ -6,20 +6,24 @@ Welcome to the Custom Arch Linux Kubernetes Worker ISO project! This ISO provide
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Usage](#usage)
-  - [Quick Start](#quick-start)
-  - [DHCP Options for Auto-Join](#dhcp-options-for-auto-join)
-- [Customization](#customization)
-  - [Building from Prebuilt Docker Image](#building-from-prebuilt-docker-image)
-  - [Enabling NVIDIA or AMD Packages](#enabling-nvidia-or-amd-packages)
-  - [Customizing Packages](#customizing-packages)
-  - [Kernel Modules](#kernel-modules)
-  - [NTP Configuration](#ntp-configuration)
-- [Feature Levels](#feature-levels)
-- [Contributing](#contributing)
-- [License](#license)
+- [Custom Arch Linux Kubernetes Worker ISO](#custom-arch-linux-kubernetes-worker-iso)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Features](#features)
+  - [Usage](#usage)
+    - [Quick Start](#quick-start)
+    - [DHCP Options for Auto-Join](#dhcp-options-for-auto-join)
+      - [Example ISC DHCP Server Configuration](#example-isc-dhcp-server-configuration)
+  - [Customization](#customization)
+    - [Building from Prebuilt Docker Image](#building-from-prebuilt-docker-image)
+    - [Enabling NVIDIA or AMD Packages](#enabling-nvidia-or-amd-packages)
+    - [Customizing Packages](#customizing-packages)
+    - [Kernel Modules](#kernel-modules)
+    - [NTP Configuration](#ntp-configuration)
+  - [Feature Levels](#feature-levels)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Original Reddit Post](#original-reddit-post)
 
 ## Overview
 
@@ -187,10 +191,6 @@ Contributions are welcome! If you have improvements or bug fixes, please open an
 ## License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE. See the [LICENSE](LICENSE) file for details.
-
----
-*Note: The splash image displayed at the top is located at `baseline/airootfs/etc/splash.png`.*
----
 
 ## Original Reddit Post
 

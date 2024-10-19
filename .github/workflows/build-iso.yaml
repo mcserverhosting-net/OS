@@ -88,11 +88,3 @@ jobs:
       with:
         name: custom-archiso
         path: baseline/out/*.iso
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: 'v${{ env.K8S_VERSION }}'
-        files: baseline/out/*.iso
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
