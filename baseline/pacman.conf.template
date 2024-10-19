@@ -6,14 +6,15 @@ ParallelDownloads = 15
 SigLevel    = Required DatabaseOptional
 LocalFileSigLevel = Optional
 
-
 [core-{{FEATURE_LEVEL}}]
-Server = https://alhp.krautflare.de/$repo/os/$arch/
+Include = /etc/pacman.d/alhp-mirrorlist
+
 [core]
 Include = /etc/pacman.d/mirrorlist
 
 [extra-{{FEATURE_LEVEL}}]
-Server = https://alhp.krautflare.de/$repo/os/$arch/
+Include = /etc/pacman.d/alhp-mirrorlist
+
 [extra]
 Include = /etc/pacman.d/mirrorlist
 
@@ -21,6 +22,7 @@ Include = /etc/pacman.d/mirrorlist
 Include = /etc/pacman.d/mirrorlist
 
 [multilib-{{FEATURE_LEVEL}}]
-Server = https://alhp.krautflare.de/$repo/os/$arch/
+Include = /etc/pacman.d/alhp-mirrorlist
+
 [multilib]
 Include = /etc/pacman.d/mirrorlist
