@@ -115,7 +115,6 @@ template-linux:
 pacman-conf:
 	@echo "Templating pacman.conf with FEATURE_LEVEL=$(FEATURE_LEVEL)"
 	@sed 's|{{FEATURE_LEVEL}}|$(FEATURE_LEVEL)|g' baseline/pacman.conf.template > baseline/pacman.conf
-	@sed -i 's/^Architecture = .*$$/Architecture = $(FEATURE_LEVEL)/' baseline/pacman.conf
 
 # Build ISO for each feature level
 $(addprefix build-iso-,$(FEATURE_LEVELS)):

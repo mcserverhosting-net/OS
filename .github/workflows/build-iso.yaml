@@ -53,7 +53,6 @@ jobs:
         ENABLE_AMD: 0
       run: |
         docker run --privileged \
-          --network=host \
           -e K8S_VERSION=$K8S_VERSION \
           -e ENABLE_NVIDIA=$ENABLE_NVIDIA \
           -e ENABLE_AMD=$ENABLE_AMD \
