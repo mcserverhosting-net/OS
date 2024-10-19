@@ -36,17 +36,18 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build -t archiso-builder .
+        docker build -t ghcr.io/mcserverhosting-net/OS:latest .
 
-    - name: Build ISOs using Docker
+    - name: Build ISOs
       run: |
         docker run --privileged \
           -e K8S_VERSION=${{ env.K8S_VERSION }} \
-          -e ENABLE_NVIDIA=${{ env.ENABLE_NVIDIA }} \
-          -e ENABLE_AMD=${{ env.ENABLE_AMD }} \
+          -e ENABLE_NVIDIA=0 \
+          -e ENABLE_AMD=0 \
           -v ${{ github.workspace }}:/workspace \
-          archiso-builder \
-          bash -c "cd /workspace && make clean && make K8S_VERSION=\$K8S_VERSION ENABLE_NVIDIA=\$ENABLE_NVIDIA ENABLE_AMD=\$ENABLE_AMD"
+          --entrypoint /bin/bash \
+          ghcr.io/mcserverhosting-net/OS:latest \
+          -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
 
     - name: List generated ISOs
       run: ls -lh baseline/out/
