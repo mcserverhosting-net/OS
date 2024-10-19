@@ -27,12 +27,16 @@ jobs:
 
     - name: Determine Changed Files
       id: changes
-      uses: dorny/paths-filter@v2
+      uses: dorny/paths-filter@v3
       with:
         filters: |
           docker:
             - 'Dockerfile'
             - 'docker/**'
+          iso:
+            - 'baseline/**'
+            - 'Makefile'
+            - '!baseline/out/**'  # Exclude output directory
 
     - name: Output Changed Files
       run: |
@@ -66,6 +70,7 @@ jobs:
         docker push ghcr.io/mcserverhosting-net/os:latest
 
     - name: Build ISOs
+      if: steps.changes.outputs.iso_changed == 'true' || github.event_name == 'schedule'
       env:
         K8S_VERSION: ${{ env.K8S_VERSION }}
         ENABLE_NVIDIA: ${{ env.ENABLE_NVIDIA }}
