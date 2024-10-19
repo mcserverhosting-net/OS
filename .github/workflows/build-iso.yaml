@@ -64,7 +64,7 @@ jobs:
         echo "ENABLE_AMD=${{ github.event.inputs.enable_amd || '0' }}" >> $GITHUB_ENV
 
     - name: Build and Push Docker Image
-      # if: steps.changes.outputs.docker_changed == 'true' || github.event_name == 'schedule'
+      if: steps.changes.outputs.docker_changed == 'true' || github.event_name == 'schedule'
       run: |
         docker build -t ghcr.io/mcserverhosting-net/os:latest .
         docker push ghcr.io/mcserverhosting-net/os:latest
