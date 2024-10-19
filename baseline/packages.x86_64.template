@@ -25,6 +25,7 @@ avahi
 nss-mdns
 open-iscsi
 xfsprogs
+dhclient
 ${UNIX_TOOLS}
 ${NVIDIA_PACKAGES}
 ${AMD_PACKAGES}
