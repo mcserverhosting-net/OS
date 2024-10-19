@@ -69,8 +69,7 @@ package-list:
 		-v enable_amd=$(ENABLE_AMD)\
 		-v amd_pkgs="$(AMD_PACKAGES)"\
 		-v unix_tools="$(UNIX_TOOLS)"\
-		'{
-			if ($$0 == "{{NVIDIA_PACKAGES}}") {
+		'{if ($$0 == "{{NVIDIA_PACKAGES}}") {
 				if (enable_nvidia == "1") {
 					split(nvidia_pkgs, arr, " ")
 					for (i in arr) print arr[i]
