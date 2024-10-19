@@ -102,14 +102,20 @@ ntp-conf:
 	@echo "Configuring ntp.conf..."
 	@sed -i 's|^server .*|server $(NTP_SERVER_IP)|' baseline/airootfs/etc/ntp.conf
 
-# Process template files to replace {{LINUX}} with the actual kernel package name
+# Process all .template files
 template-linux:
-	@echo "Templating files with LINUX=$(LINUX)"
+	@echo "Templating files with LINUX=$(LINUX) and FEATURE_LEVEL=$(FEATURE_LEVEL)"
 	@find baseline -type f -name "*.template" | while read template; do \
 	  target="$${template%.template}"; \
 	  echo "Processing $$template -> $$target"; \
-	  sed 's|{{LINUX}}|$(LINUX)|g' "$$template" > "$$target"; \
+	  sed 's|{{LINUX}}|$(LINUX)|g; s|{{FEATURE_LEVEL}}|$(FEATURE_LEVEL)|g' "$$template" > "$$target"; \
 	done
+
+# Process pacman.conf.template to generate pacman.conf
+pacman-conf:
+	@echo "Templating pacman.conf with FEATURE_LEVEL=$(FEATURE_LEVEL)"
+	@sed 's|{{FEATURE_LEVEL}}|$(FEATURE_LEVEL)|g' baseline/pacman.conf.template > baseline/pacman.conf
+	@sed -i 's/^Architecture = .*$$/Architecture = $(FEATURE_LEVEL)/' baseline/pacman.conf
 
 # Build ISO for each feature level
 $(addprefix build-iso-,$(FEATURE_LEVELS)):
@@ -117,12 +123,12 @@ $(addprefix build-iso-,$(FEATURE_LEVELS)):
 	@$(MAKE) build-iso FEATURE_LEVEL=$(@:build-iso-%=%)
 
 # Build the ISO using Docker
-build-iso:
+build-iso: pacman-conf
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
+	# Ensure the pacman.conf has the correct Architecture
 	@sed -i 's/^Architecture = .*$$/Architecture = $(FEATURE_LEVEL)/' baseline/pacman.conf
 	@mkarchiso -v -w /tmp -o baseline/out baseline -quiet=y
 	@mv baseline/out/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
-
 
 # Clean target
 clean:
