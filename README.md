@@ -1,39 +1,24 @@
 # Custom Arch Linux Kubernetes Worker ISO
 
-![Splash Image](baseline/airootfs/etc/splash.png)
+![Splash Image](https://github.com/mcserverhosting-net/OS/blob/main/baseline/syslinux/splash.png?raw=true)
 
 Welcome to the Custom Arch Linux Kubernetes Worker ISO project! This ISO provides a ready-to-use, ephemeral Arch Linux-based system designed to automatically join a Kubernetes cluster on boot. It simplifies scaling your Kubernetes cluster with minimal effort and customization.
 
 ## Table of Contents
 
 - [Overview](#overview)
-
 - [Features](#features)
-
 - [Usage](#usage)
-
   - [Quick Start](#quick-start)
-
   - [DHCP Options for Auto-Join](#dhcp-options-for-auto-join)
-
 - [Customization](#customization)
-
   - [Building from Prebuilt Docker Image](#building-from-prebuilt-docker-image)
-
   - [Enabling NVIDIA or AMD Packages](#enabling-nvidia-or-amd-packages)
-
   - [Customizing Packages](#customizing-packages)
-
   - [Kernel Modules](#kernel-modules)
-
   - [NTP Configuration](#ntp-configuration)
-
 - [Feature Levels](#feature-levels)
-
-- [Reference](#reference)
-
 - [Contributing](#contributing)
-
 - [License](#license)
 
 ## Overview
@@ -62,15 +47,15 @@ Originally developed by our hosting service to manage nodes at scale, this ISO i
 
 You don't need to build the ISO yourself unless you want to customize it. You can download the latest prebuilt ISO from the [Releases](https://github.com/mcserverhosting-net/OS/releases) page. (We currently cannot build v4, you'll have to do that yourself)
 
-1\. **Download the ISO**:
+1. **Download the ISO**:
 
    Visit the [Releases](https://github.com/mcserverhosting-net/OS/releases) page and download the latest ISO artifact.
 
-2\. **Set Up DHCP Options**:
+2. **Set Up DHCP Options**:
 
    Configure your DHCP server to provide the necessary options for the nodes to auto-join your Kubernetes cluster. See [DHCP Options for Auto-Join](#dhcp-options-for-auto-join) below.
 
-3\. **Boot the Node**:
+3. **Boot the Node**:
 
    Boot your machine using the downloaded ISO (via USB, PXE, or virtual machine). The node will automatically format the first available disk, load necessary kernel modules, and join your Kubernetes cluster.
 
@@ -79,31 +64,18 @@ You don't need to build the ISO yourself unless you want to customize it. You ca
 To enable nodes to automatically join your Kubernetes cluster, configure your DHCP server with the following options:
 
 | Option Code | Name                        | Description                                                |
-
 |-------------|-----------------------------|------------------------------------------------------------|
-
 | **1**       | Subnet Mask                 | Defines the subnet mask.                                   |
-
 | **3**       | Router                      | Specifies the default gateway.                             |
-
 | **6**       | Domain Name Servers         | Lists DNS servers.                                         |
-
 | **15**      | Domain Name                 | Sets the domain name.                                      |
-
 | **42**      | NTP Servers                 | Specifies NTP servers.                                     |
-
 | **66**      | TFTP Server Name            | TFTP server for network booting (if used).                 |
-
 | **67**      | Bootfile Name               | Name of the bootfile (if PXE booting).                     |
-
 | **119**     | Domain Search               | Specifies domain search list for DNS resolution.           |
-
 | **249**     | Kubeadm API Endpoint        | Custom option for kubeadm API endpoint (e.g., `API_ADDRESS`). |
-
 | **250**     | Kubeadm Token               | Custom option for kubeadm token (e.g., `TOKEN`).           |
-
 | **251**     | Kubeadm CA Cert Hash        | Custom option for kubeadm CA certificate hash (`CERTHASH`). |
-
 | **252**     | Node Labels                 | Custom option for Kubernetes node labels (`NODE_LABELS`).  |
 
 **Note**: Options 249-252 are custom DHCP options that you need to define on your DHCP server to pass the kubeadm configuration parameters to the booting nodes.
@@ -111,35 +83,20 @@ To enable nodes to automatically join your Kubernetes cluster, configure your DH
 #### Example ISC DHCP Server Configuration
 
 ```dhcpd.conf
-
 option space custom;
-
 option custom.api-address code 249 = text;
-
 option custom.token code 250 = text;
-
 option custom.ca-cert-hash code 251 = text;
-
 option custom.node-labels code 252 = text;
-
 subnet 192.168.1.0 netmask 255.255.255.0 {
-
   range 192.168.1.100 192.168.1.200;
-
   option routers 192.168.1.1;
-
   option domain-name-servers 8.8.8.8;
-
   option custom.api-address "your-api-server:6443";
-
   option custom.token "your-kubeadm-token";
-
   option custom.ca-cert-hash "sha256:your-ca-cert-hash";
-
   option custom.node-labels "node-role.kubernetes.io/worker=true";
-
 }
-
 ```
 
 ## Customization
@@ -148,33 +105,24 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 
 If you wish to customize the ISO, you can build it yourself using the prebuilt Docker image provided.
 
-1\. **Clone the Repository**:
+1. **Clone the Repository**:
 
-   ```bash
+```bash
+git clone https://github.com/mcserverhosting-net/OS.git
+cd OS
+```
 
-   git clone https://github.com/mcserverhosting-net/OS.git
+2. **Build the ISO**:
 
-   cd OS
-
-   ```
-
-2\. **Build the ISO**:
-
-   ```bash
-
-   docker run --privileged
-
-     -v $(pwd):/workspace
-
-     ghcr.io/mcserverhosting-net/os:latest
-
-     make clean && make
-
-   ```
-
+```bash
+docker run --privileged
+    -v $(pwd):/workspace
+    ghcr.io/mcserverhosting-net/os:latest
+    make clean && make
+```
    This command uses the prebuilt Docker image `ghcr.io/mcserverhosting-net/os:latest` to build the ISO inside a container.
 
-3\. **Find Your ISO**:
+3. **Find Your ISO**:
 
    The generated ISO files will be located in the `baseline/out/` directory.
 
@@ -184,19 +132,15 @@ To include NVIDIA or AMD packages in your custom ISO, set the `ENABLE_NVIDIA` or
 
 - **Enable NVIDIA Packages**:
 
-  ```bash
-
-  make ENABLE_NVIDIA=1
-
-  ```
+```bash
+make ENABLE_NVIDIA=1
+```
 
 - **Enable AMD Packages**:
 
-  ```bash
-
-  make ENABLE_AMD=1
-
-  ```
+```bash
+make ENABLE_AMD=1
+```
 
 ### Customizing Packages
 
@@ -211,9 +155,7 @@ Edit the `packages.x86_64.template` file in the `baseline/` directory to add or 
 Specify the kernel modules to load during boot by modifying the `KERNEL_MODULES_LIST` variable in the `Makefile`.
 
 ```makefile
-
 KERNEL_MODULES_LIST = br_netfilter ip6_tables ip_tables ip6table_mangle ip6table_raw ip6table_filter xt_socket erofs
-
 ```
 
 ### NTP Configuration
@@ -221,9 +163,7 @@ KERNEL_MODULES_LIST = br_netfilter ip6_tables ip_tables ip6table_mangle ip6table
 Set your NTP server IP address in the `Makefile`:
 
 ```makefile
-
 NTP_SERVER_IP = your.ntp.server.ip
-
 ```
 
 ## Feature Levels
@@ -231,17 +171,13 @@ NTP_SERVER_IP = your.ntp.server.ip
 This project references [ALHP.GO](https://somegit.dev/ALHP/ALHP.GO), which provides Arch Linux packages optimized with different x86-64 feature levels, `-O3` optimizations, and LTO (Link Time Optimization). You can build ISOs optimized for different CPU architectures:
 
 - **x86-64-v2**: For CPUs supporting SSE3 and other basic extensions.
-
 - **x86-64-v3**: For CPUs with AVX, AVX2, and FMA3 instructions.
-
 - **x86-64-v4**: For the latest CPUs supporting AVX512 instructions.
 
 To build an ISO for a specific feature level, set the `FEATURE_LEVEL` variable:
 
 ```bash
-
 make FEATURE_LEVEL=x86-64-v4
-
 ```
 
 ## Contributing
@@ -253,65 +189,9 @@ Contributions are welcome! If you have improvements or bug fixes, please open an
 This project is licensed under the GNU GENERAL PUBLIC LICENSE. See the [LICENSE](LICENSE) file for details.
 
 ---
-
 *Note: The splash image displayed at the top is located at `baseline/airootfs/etc/splash.png`.*
-
 ---
 
 ## Original Reddit Post
 
-For historical context, this project was announced on Reddit:
-
-### Releasing Our Kubeadm-Based OS to the Public
-
-We're a small hosting service that uses Kubernetes. We have enough nodes to worry about managing them at scale at this point, so we made an ephemeral OS based on `archiso`.
-
-The image is small (~800MB) and has NVIDIA GPU-operator compatible build for GPUs (1.4GB image with NVIDIA support).
-
-#### The ISO Booting and Joining a Cluster Using VirtualBox as a Test
-
-*(A video or image would be here in the Reddit post.)*
-
-**TL;DR**
-
-- `kubeadm` and dependencies built into an ISO fetch its config to join a cluster.
-
-- **Repo**: [https://github.com/mcserverhosting-net/OS](https://github.com/mcserverhosting-net/OS)
-
-#### Long Summary
-
-The image is built with CRI-O and `crun`. It is configured to use our registry as a mirror for Docker Hub. It also uses GitHub Actions CI for IPMI to consume images. On boot, it runs the init script to start.
-
-The init script scans and formats the first available disk for containers to use (for pulling, mounting, containers, etc.). Then it pulls a local `kubeadm` config and initializes the necessary kernel modules for Kubernetes, Ceph, and Cilium in IPv6 mode. Finally, it joins the cluster.
-
-#### Advantages
-
-- **Ephemeral Worker Nodes**: Easy to restart and update the workflow.
-
-- **Git-Based Configuration**: Central location for worker node configuration and management.
-
-- **MAC Address Identification**: Nodes are identified by MAC address for proper rejoining on restarts.
-
-#### Disadvantages
-
-- **Cattle Mentality on Steroids**: Nodes are meant to be ephemeral and stateless.
-
-- **Customization Requires a Build**: Any customization requires building your own ISO.
-
-- **No ARM Support Yet**: Currently, aarch64 (ARM64) is not supported.
-
-#### Usage
-
-The latest GitHub Actions run will have an ISO artifact you can use. Generate a `kubeadm` config and place it on your gateway. Congratulations, you have a new ephemeral node in the cluster.
-
-#### Making Your Own
-
-Since we use `archiso` to make this, customization is straightforward. If you want to, for example, remove the NVIDIA packages for a lighter image, clone the repo and remove the `nvidia` and `nvidia-container-toolkit` lines from the `packages.x86_64` file and run `make`, replacing `podman` with `docker` if you don't have `podman` installed.
-
----
-
-*Please note that the information above may have evolved since the original Reddit post. For the most up-to-date details, please refer to this README and the repository.*
-
----
-
-We hope this project is useful to anyone wishing to manage nodes at home, work, or in the datacenter more easily.
+For historical context, this project was announced on [Reddit](https://www.reddit.com/r/kubernetes/comments/zjk605/releasing_our_kubeadmbased_os_to_the_public/)

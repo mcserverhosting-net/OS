@@ -87,14 +87,14 @@ jobs:
 
     - name: List generated ISOs
       # if: steps.changes.outputs.iso_changed == 'true' || github.event_name == 'schedule'
-      run: ls -lh /tmp/*.iso
+      run: ls -lh baseline/out/*.iso
 
     - name: Upload ISO Artifacts
       # if: steps.changes.outputs.iso_changed == 'true' || github.event_name == 'schedule'
       uses: actions/upload-artifact@v3
       with:
         name: custom-archiso
-        path: /tmp/*.iso
+        path: baseline/out/*.iso
 
     - name: Create GitHub Release
       # if: steps.changes.outputs.iso_changed == 'true' || github.event_name == 'schedule'

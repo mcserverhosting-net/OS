@@ -131,9 +131,9 @@ $(addprefix build-iso-,$(FEATURE_LEVELS)):
 build-iso: pacman-conf
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
 	# Ensure the pacman.conf has the correct Architecture
-	@mkdir -p /tmp/mkarchiso
-	@mkarchiso -v -w /tmp/mkarchiso -o baseline/out baseline -quiet=y
-	@mv baseline/out/*.iso /tmp/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
+	@mkdir -p baseline/out/tmp
+	@mkarchiso -v -w /tmp/mkarchiso -o baseline/out/tmp baseline -quiet=y
+	@mv baseline/out/tmp/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
 	@rm -rf /tmp/mkarchiso/*
 	@rm -rf /var/cache/pacman
 
