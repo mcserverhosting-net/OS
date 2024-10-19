@@ -1,7 +1,7 @@
 FROM archlinux
 
 # Update and install necessary packages
-RUN pacman -Syu --noconfirm archiso base-devel git sudo wget
+RUN pacman -Syu --noconfirm archiso base-devel git sudo wget grub
 
 # Create a non-root user to use yay (AUR helper does not allow root)
 RUN useradd -m user \

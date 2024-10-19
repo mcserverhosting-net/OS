@@ -5,6 +5,7 @@ mkinitcpio
 mkinitcpio-archiso
 pv
 syslinux
+grub
 amd-ucode
 intel-ucode
 kubelet
