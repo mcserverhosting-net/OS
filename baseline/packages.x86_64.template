@@ -1,6 +1,6 @@
 base
-{{LINUX}}
-{{LINUX}}-headers
+${LINUX}
+${LINUX}-headers
 mkinitcpio
 mkinitcpio-archiso
 pv
@@ -25,6 +25,10 @@ avahi
 nss-mdns
 open-iscsi
 xfsprogs
-{{UNIX_TOOLS}}
-{{NVIDIA_PACKAGES}}
-{{AMD_PACKAGES}}
+${UNIX_TOOLS}
+#NVIDIA_PACKAGES#
+${NVIDIA_PACKAGES}
+#END_NVIDIA_PACKAGES#
+#AMD_PACKAGES#
+${AMD_PACKAGES}
+#END_AMD_PACKAGES#
