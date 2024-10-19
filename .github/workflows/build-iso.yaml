@@ -23,6 +23,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Log in to GHCR
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
     - name: Get Latest Kubernetes Version
       id: get_k8s_version
       run: |
@@ -34,20 +41,26 @@ jobs:
         echo "ENABLE_NVIDIA=${{ github.event.inputs.enable_nvidia || '0' }}" >> $GITHUB_ENV
         echo "ENABLE_AMD=${{ github.event.inputs.enable_amd || '0' }}" >> $GITHUB_ENV
 
-    - name: Build Docker Image
+    - name: Build and Push Docker Image
       run: |
         docker build -t ghcr.io/mcserverhosting-net/os:latest .
+        docker push ghcr.io/mcserverhosting-net/os:latest
 
     - name: Build ISOs
+      env:
+        K8S_VERSION: 1.31.0
+        ENABLE_NVIDIA: 0
+        ENABLE_AMD: 0
       run: |
         docker run --privileged \
-          -e K8S_VERSION=${{ env.K8S_VERSION }} \
-          -e ENABLE_NVIDIA=0 \
-          -e ENABLE_AMD=0 \
+          -e K8S_VERSION=$K8S_VERSION \
+          -e ENABLE_NVIDIA=$ENABLE_NVIDIA \
+          -e ENABLE_AMD=$ENABLE_AMD \
           -v ${{ github.workspace }}:/workspace \
           --entrypoint /bin/bash \
           ghcr.io/mcserverhosting-net/os:latest \
           -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
+
 
     - name: List generated ISOs
       run: ls -lh baseline/out/
