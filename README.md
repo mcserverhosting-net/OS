@@ -195,3 +195,5 @@ This project is licensed under the GNU GENERAL PUBLIC LICENSE. See the [LICENSE]
 ## Original Reddit Post
 
 For historical context, this project was announced on [Reddit](https://www.reddit.com/r/kubernetes/comments/zjk605/releasing_our_kubeadmbased_os_to_the_public/)
+
+In loving memory of Bradley Joseph Root and his dog, [Elli](https://kubernetes.io/blog/2024/08/13/kubernetes-v1-31-release/)
