@@ -29,7 +29,8 @@ KERNEL_MODULES = br_netfilter ip6_tables ip_tables ip6table_mangle ip6table_raw 
 # Paths
 OUTPUT_DIR = baseline/airootfs/usr/local/bin
 
-INCLUDE_OPENSSH := $(shell grep -w 'openssh' baseline/packages.x86_64 >/dev/null && echo 1 || echo 0)
+# Define INCLUDE_OPENSSH as a recursive variable to evaluate it at runtime
+INCLUDE_OPENSSH = $(shell grep -w 'openssh' baseline/packages.x86_64 >/dev/null && echo 1 || echo 0)
 
 all: template-linux template-kubeadm ssh-keys package-list init-script ntp-conf $(addprefix build-iso-,$(FEATURE_LEVELS))
 
@@ -57,21 +58,38 @@ template-kubeadm:
 # Generate package list based on enabled features
 package-list:
 	@echo "Generating package list..."
-	@cp baseline/packages.x86_64.template baseline/packages.x86_64
-	@if [ "$(ENABLE_NVIDIA)" -eq "1" ]; then \
-	  echo "Including NVIDIA packages: $(NVIDIA_PACKAGES)"; \
-	  sed -i 's|{{NVIDIA_PACKAGES}}|$(NVIDIA_PACKAGES)|' baseline/packages.x86_64; \
-	else \
-	  sed -i '/{{NVIDIA_PACKAGES}}/d' baseline/packages.x86_64; \
-	fi
-	@if [ "$(ENABLE_AMD)" -eq "1" ]; then \
-	  echo "Including AMD packages: $(AMD_PACKAGES)"; \
-	  sed -i 's|{{AMD_PACKAGES}}|$(AMD_PACKAGES)|' baseline/packages.x86_64; \
-	else \
-	  sed -i '/{{AMD_PACKAGES}}/d' baseline/packages.x86_64; \
-	fi
-	@echo "Including UNIX tools: $(UNIX_TOOLS)"
-	@sed -i 's|{{UNIX_TOOLS}}|$(UNIX_TOOLS)|' baseline/packages.x86_64
+	@cp baseline/packages.x86_64.template baseline/packages.x86_64.tmp
+
+	# Replace {{LINUX}} and {{LINUX}}-headers
+	@sed -i 's|{{LINUX}}|$(LINUX)|g' baseline/packages.x86_64.tmp
+
+	# Process placeholders with potential multi-line values
+	@awk -v enable_nvidia=$(ENABLE_NVIDIA) \
+	     -v nvidia_pkgs="$(NVIDIA_PACKAGES)" \
+	     -v enable_amd=$(ENABLE_AMD) \
+	     -v amd_pkgs="$(AMD_PACKAGES)" \
+	     -v unix_tools="$(UNIX_TOOLS)" \
+	     '{
+	          if ($$0 == "{{NVIDIA_PACKAGES}}") {
+	              if (enable_nvidia == "1") {
+	                  split(nvidia_pkgs, arr, " ")
+	                  for (i in arr) print arr[i]
+	              }
+	          } else if ($$0 == "{{AMD_PACKAGES}}") {
+	              if (enable_amd == "1") {
+	                  split(amd_pkgs, arr, " ")
+	                  for (i in arr) print arr[i]
+	              }
+	          } else if ($$0 == "{{UNIX_TOOLS}}") {
+	              split(unix_tools, arr, " ")
+	              for (i in arr) print arr[i]
+	          } else {
+	              print $$0
+	          }
+	      }' baseline/packages.x86_64.tmp > baseline/packages.x86_64
+
+	# Remove temporary file
+	@rm baseline/packages.x86_64.tmp
 
 # Ensure SSH keys have correct permissions
 ssh-keys:
@@ -121,10 +139,9 @@ $(addprefix build-iso-,$(FEATURE_LEVELS)):
 	@echo "Building ISO for feature level: $(@:build-iso-%=%)"
 	@$(MAKE) build-iso FEATURE_LEVEL=$(@:build-iso-%=%)
 
-# Build the ISO using Docker
+# Build the ISO
 build-iso: pacman-conf
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
-	# Ensure the pacman.conf has the correct Architecture
 	@mkarchiso -v -w /tmp -o baseline/out baseline -quiet=y
 	@mv baseline/out/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
 
