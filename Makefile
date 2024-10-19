@@ -65,27 +65,28 @@ package-list:
 
 	# Process placeholders with potential multi-line values
 	@awk -v enable_nvidia=$(ENABLE_NVIDIA)\
-		-v nvidia_pkgs="$(NVIDIA_PACKAGES)"\
-		-v enable_amd=$(ENABLE_AMD)\
-		-v amd_pkgs="$(AMD_PACKAGES)"\
-		-v unix_tools="$(UNIX_TOOLS)"\
-		'{if ($$0 == "{{NVIDIA_PACKAGES}}") {
-				if (enable_nvidia == "1") {
-					split(nvidia_pkgs, arr, " ")
-					for (i in arr) print arr[i]
-				}
-			} else if ($$0 == "{{AMD_PACKAGES}}") {
-				if (enable_amd == "1") {
-					split(amd_pkgs, arr, " ")
-					for (i in arr) print arr[i]
-				}
-			} else if ($$0 == "{{UNIX_TOOLS}}") {
-				split(unix_tools, arr, " ")
-				for (i in arr) print arr[i]
-			} else {
-				print $$0
-			}
-		}' baseline/packages.x86_64.tmp > baseline/packages.x86_64
+-v nvidia_pkgs="$(NVIDIA_PACKAGES)"\
+-v enable_amd=$(ENABLE_AMD)\
+-v amd_pkgs="$(AMD_PACKAGES)"\
+-v unix_tools="$(UNIX_TOOLS)"\
+'{
+	if ($$0 == "{{NVIDIA_PACKAGES}}") {
+		if (enable_nvidia == "1") {
+			split(nvidia_pkgs, arr, " ")
+			for (i in arr) print arr[i]
+		}
+	} else if ($$0 == "{{AMD_PACKAGES}}") {
+		if (enable_amd == "1") {
+			split(amd_pkgs, arr, " ")
+			for (i in arr) print arr[i]
+		}
+	} else if ($$0 == "{{UNIX_TOOLS}}") {
+		split(unix_tools, arr, " ")
+		for (i in arr) print arr[i]
+	} else {
+		print $$0
+	}
+}' baseline/packages.x86_64.tmp > baseline/packages.x86_64
 
 	# Remove temporary file
 	@rm baseline/packages.x86_64.tmp
