@@ -3,7 +3,7 @@ name: Build and Release ISO
 on:
   push:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+    - cron: '0 0 1 * *'  # Runs monthly on the 1st at midnight UTC
   workflow_dispatch:
     inputs:
       enable_nvidia:
@@ -22,8 +22,24 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Needed for full git history to compare changes
+
+    - name: Determine Changed Files
+      id: changes
+      uses: dorny/paths-filter@v2
+      with:
+        filters: |
+          docker:
+            - 'Dockerfile'
+            - 'docker/**'
+          iso:
+            - 'baseline/**'
+            - 'Makefile'
+            - '!baseline/out/**'  # Exclude output directory
 
     - name: Log in to GHCR
+      if: steps.changes.outputs.any_changed == 'true' || github.event_name == 'schedule'
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
@@ -42,15 +58,17 @@ jobs:
         echo "ENABLE_AMD=${{ github.event.inputs.enable_amd || '0' }}" >> $GITHUB_ENV
 
     - name: Build and Push Docker Image
+      if: steps.changes.outputs.changes_docker == 'true' || github.event_name == 'schedule'
       run: |
         docker build -t ghcr.io/mcserverhosting-net/os:latest .
         docker push ghcr.io/mcserverhosting-net/os:latest
 
     - name: Build ISOs
+      if: steps.changes.outputs.changes_iso == 'true' || github.event_name == 'schedule'
       env:
-        K8S_VERSION: 1.31.0
-        ENABLE_NVIDIA: 0
-        ENABLE_AMD: 0
+        K8S_VERSION: ${{ env.K8S_VERSION }}
+        ENABLE_NVIDIA: ${{ env.ENABLE_NVIDIA }}
+        ENABLE_AMD: ${{ env.ENABLE_AMD }}
       run: |
         docker run --privileged \
           -e K8S_VERSION=$K8S_VERSION \
@@ -61,17 +79,19 @@ jobs:
           ghcr.io/mcserverhosting-net/os:latest \
           -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
 
-
     - name: List generated ISOs
+      if: steps.changes.outputs.changes_iso == 'true' || github.event_name == 'schedule'
       run: ls -lh baseline/out/
 
     - name: Upload ISO Artifacts
+      if: steps.changes.outputs.changes_iso == 'true' || github.event_name == 'schedule'
       uses: actions/upload-artifact@v3
       with:
         name: custom-archiso
         path: baseline/out/*.iso
 
     - name: Create GitHub Release
+      if: steps.changes.outputs.changes_iso == 'true' || github.event_name == 'schedule'
       uses: softprops/action-gh-release@v1
       with:
         tag_name: 'v${{ env.K8S_VERSION }}'
