@@ -1,0 +1,140 @@
+#!/bin/bash
+set -e
+
+#ENABLE_SSH
+echo "[INFO] Initializing the script. Enabling sshd service."
+systemctl enable --now sshd
+
+# Check if placeholders are present in kubeadm.conf.yaml
+if grep -q '\${TOKEN}' /etc/kubeadm/kubeadm.conf.yaml; then
+  echo "[INFO] Placeholders detected in kubeadm.conf.yaml. Extracting DHCP options."
+  
+  # Extract custom DHCP options
+  # Use dhclient to get the options
+  dhclient -d -sf /usr/bin/dhclient-script
+  
+  TOKEN=$(nmcli -g DHCP4.OPTION | grep 'option-224' | awk -F'option-224:' '{print $2}' | tr -d '"')
+  CERT_HASH=$(nmcli -g DHCP4.OPTION | grep 'option-225' | awk -F'option-225:' '{print $2}' | tr -d '"')
+  API_ADDRESS=$(nmcli -g DHCP4.OPTION | grep 'option-226' | awk -F'option-226:' '{print $2}' | tr -d '"')
+  
+  echo "[INFO] TOKEN: $TOKEN"
+  echo "[INFO] CERT_HASH: $CERT_HASH"
+  echo "[INFO] API_ADDRESS: $API_ADDRESS"
+  
+  # If any of the variables are empty, exit with an error
+  if [ -z "$TOKEN" ] || [ -z "$CERT_HASH" ] || [ -z "$API_ADDRESS" ]; then
+    echo "[ERROR] Missing DHCP options. Exiting."
+    exit 1
+  fi
+  
+  # Replace placeholders in kubeadm.conf.yaml
+  sed -i "s|\${TOKEN}|$TOKEN|g" /etc/kubeadm/kubeadm.conf.yaml
+  sed -i "s|\${CERT_HASH}|$CERT_HASH|g" /etc/kubeadm/kubeadm.conf.yaml
+  sed -i "s|\${API_ADDRESS}|$API_ADDRESS|g" /etc/kubeadm/kubeadm.conf.yaml
+else
+  echo "[INFO] No placeholders in kubeadm.conf.yaml. Skipping DHCP option extraction."
+fi
+
+
+# Define a list of candidate disks to use
+candidate_disks="/dev/nvme0n1 /dev/sda /dev/vda"
+
+# Function to check if a disk is empty (no partitions)
+is_disk_empty() {
+  local disk="$1"
+  echo "[INFO] Checking if $disk is empty."
+
+  local partition_count
+  partition_count=$(parted --script "$disk" print | grep -c '^Number')
+
+  [ "$partition_count" -eq 0 ]
+}
+
+# Function to wipe and format a disk
+wipe_and_format_disk() {
+  local disk="$1"
+  echo "[INFO] Wiping and formatting disk: $disk."
+
+  sgdisk --zap-all "$disk"
+  if [ "$(basename "$disk")" = "nvme0n1" ]; then
+    blkdiscard "$disk"
+  else
+    dd if=/dev/zero of="$disk" bs=1M count=100 oflag=direct,dsync
+  fi
+
+  mkfs.ext4 "$disk"
+}
+
+# Iterate through the candidate disks
+for disk in $candidate_disks; do
+  # Check if the disk exists
+  if lsblk "$disk" >/dev/null 2>&1; then
+    # Check if the disk is empty
+    if is_disk_empty "$disk"; then
+      echo "[INFO] Disk $disk is empty. Proceeding to wipe and format it."
+      wipe_and_format_disk "$disk"
+      export DISK="$disk"
+      break
+    else
+      echo "[INFO] Disk $disk is not empty. Using it as a mount."
+      export DISK="$disk"
+      break
+    fi
+  fi
+done
+
+# If no suitable disk was found, use a ramdisk
+if [ -z "$DISK" ]; then
+  echo "[WARN] No disk device found. Using a ramdisk. Assuming at least 32G of memory available."
+  # Use half of the available memory, up to 16G
+  MEM_AVAILABLE=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+  MEM_AVAILABLE_MB=$((MEM_AVAILABLE / 1024))
+  DISK_SIZE_MB=$((MEM_AVAILABLE_MB / 2))
+  if [ "$DISK_SIZE_MB" -gt 16384 ]; then
+    DISK_SIZE_MB=16384
+  fi
+  modprobe zram num_devices=1
+  echo "${DISK_SIZE_MB}M" > /sys/block/zram0/disksize
+  export DISK=/dev/zram0
+  mkfs.ext4 "$DISK"
+fi
+
+# Mount the disk to /mnt and /var/lib/kubelet
+mount "$DISK" /mnt
+mkdir -p /mnt/tmp
+mkdir -p /var/lib/kubelet
+mount "$DISK" /var/lib/kubelet
+
+echo "[INFO] Disk mounted to /mnt and /var/lib/kubelet"
+
+export UUID=$(cat /etc/machine-id)
+
+# Load Kernel modules
+# The modprobe commands will be injected here by the Makefile
+
+echo '1' > /proc/sys/net/ipv4/ip_forward
+
+systemctl enable --now iscsid
+systemctl enable --now crio
+systemctl enable --now kubelet
+
+# Prepare kubeadm configuration
+cat <<EOF > /etc/kubeadm/kubeadm.conf.yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    token: ${TOKEN}
+    apiServerEndpoint: ${API_ADDRESS}
+    caCertHashes:
+      - ${CERT_HASH}
+nodeRegistration:
+  name: "ephemeral-${UUID}"
+  kubeletExtraArgs:
+    node-labels: "net.mcserverhosting.node/ephemeral=true,kubernetes.io/os=MCSH"
+EOF
+
+echo "[INFO] Joining Kubernetes cluster."
+kubeadm join --config /etc/kubeadm/kubeadm.conf.yaml --v=5
+
+echo "[INFO] Kubernetes join operation complete."

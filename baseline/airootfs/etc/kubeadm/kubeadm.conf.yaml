@@ -5,8 +5,9 @@ nodeRegistration:
   taints: []
   kubeletExtraArgs:
     resolv-conf: /etc/resolv.conf
+    name: "ephemeral-${UUID}"
     cgroup-driver: systemd
-    node-labels: "net.mcserverhosting.node/ephemeral=true,kubernetes.io/os=MCSH"
+    node-labels: "{{NODE_LABELS}}"
     cpu-manager-policy: static
     memory-manager-policy: Static
     reserved-cpus: "0"
@@ -20,7 +21,8 @@ nodeRegistration:
     root-dir: /mnt/kubelet
 discovery:
   bootstrapToken:
-    apiServerEndpoint 
-    token: 
+    token: {{TOKEN}}
+    apiServerEndpoint: {{API_ADDRESS}}
     caCertHashes:
-    -
+      - {{CERT_HASH}}
+
