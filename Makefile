@@ -133,6 +133,8 @@ build-iso: pacman-conf
 	# Ensure the pacman.conf has the correct Architecture
 	@mkarchiso -v -w /tmp -o baseline/out baseline -quiet=y
 	@mv baseline/out/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
+	@rm -rf /tmp/*
+	@rm -rf /var/cache/pacman
 
 # Clean target
 clean:
