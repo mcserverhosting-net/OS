@@ -29,10 +29,10 @@ KERNEL_MODULES = br_netfilter ip6_tables ip_tables ip6table_mangle ip6table_raw 
 # Paths
 OUTPUT_DIR = baseline/airootfs/usr/local/bin
 
-# Define INCLUDE_OPENSSH as a recursive variable to evaluate it at runtime
 INCLUDE_OPENSSH = $(shell grep -w 'openssh' baseline/packages.x86_64 >/dev/null && echo 1 || echo 0)
 
 all: template-linux template-kubeadm ssh-keys package-list init-script ntp-conf $(addprefix build-iso-,$(FEATURE_LEVELS))
+
 
 # Process kubeadm.conf.yaml.template
 template-kubeadm:
@@ -65,28 +65,28 @@ package-list:
 
 	# Process placeholders with potential multi-line values
 	@awk -v enable_nvidia=$(ENABLE_NVIDIA)\
-	-v nvidia_pkgs="$(NVIDIA_PACKAGES)"\
-	-v enable_amd=$(ENABLE_AMD)\
-	-v amd_pkgs="$(AMD_PACKAGES)"\
-	-v unix_tools="$(UNIX_TOOLS)"\
-	'{
-		if ($$0 == "{{NVIDIA_PACKAGES}}") {
-			if (enable_nvidia == "1") {
-				split(nvidia_pkgs, arr, " ")
-				for (i in arr) print arr[i]
-			}
-		} else if ($$0 == "{{AMD_PACKAGES}}") {
-			if (enable_amd == "1") {
-				split(amd_pkgs, arr, " ")
-				for (i in arr) print arr[i]
-			}
-		} else if ($$0 == "{{UNIX_TOOLS}}") {
-			split(unix_tools, arr, " ")
-			for (i in arr) print arr[i]
-		} else {
-			print $$0
-		}
-	}' baseline/packages.x86_64.tmp > baseline/packages.x86_64
+-v nvidia_pkgs="$(NVIDIA_PACKAGES)"\
+-v enable_amd=$(ENABLE_AMD)\
+-v amd_pkgs="$(AMD_PACKAGES)"\
+-v unix_tools="$(UNIX_TOOLS)"\
+'{
+    if ($$0 == "{{NVIDIA_PACKAGES}}") {
+        if (enable_nvidia == "1") {
+            split(nvidia_pkgs, arr, " ")
+            for (i in arr) print arr[i]
+        }
+    } else if ($$0 == "{{AMD_PACKAGES}}") {
+        if (enable_amd == "1") {
+            split(amd_pkgs, arr, " ")
+            for (i in arr) print arr[i]
+        }
+    } else if ($$0 == "{{UNIX_TOOLS}}") {
+        split(unix_tools, arr, " ")
+        for (i in arr) print arr[i]
+    } else {
+        print $$0
+    }
+}' baseline/packages.x86_64.tmp > baseline/packages.x86_64
 
 	# Remove temporary file
 	@rm baseline/packages.x86_64.tmp
@@ -139,9 +139,10 @@ $(addprefix build-iso-,$(FEATURE_LEVELS)):
 	@echo "Building ISO for feature level: $(@:build-iso-%=%)"
 	@$(MAKE) build-iso FEATURE_LEVEL=$(@:build-iso-%=%)
 
-# Build the ISO
+# Build the ISO using Docker
 build-iso: pacman-conf
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
+	# Ensure the pacman.conf has the correct Architecture
 	@mkarchiso -v -w /tmp -o baseline/out baseline -quiet=y
 	@mv baseline/out/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
 
