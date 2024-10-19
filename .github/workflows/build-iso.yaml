@@ -36,7 +36,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build -t ghcr.io/mcserverhosting-net/OS:latest .
+        docker build -t ghcr.io/mcserverhosting-net/os:latest .
 
     - name: Build ISOs
       run: |
@@ -46,7 +46,7 @@ jobs:
           -e ENABLE_AMD=0 \
           -v ${{ github.workspace }}:/workspace \
           --entrypoint /bin/bash \
-          ghcr.io/mcserverhosting-net/OS:latest \
+          ghcr.io/mcserverhosting-net/os:latest \
           -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
 
     - name: List generated ISOs
