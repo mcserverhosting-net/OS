@@ -6,6 +6,7 @@ mkinitcpio-archiso
 pv
 syslinux
 grub
+edk2-shell
 amd-ucode
 intel-ucode
 kubelet
