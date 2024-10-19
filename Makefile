@@ -83,6 +83,7 @@ package-list:
 	  sed '/^#AMD_PACKAGES#/,/^#END_AMD_PACKAGES#/d' baseline/packages.x86_64.tmp3 > baseline/packages.x86_64; \
 	fi; \
 	rm baseline/packages.x86_64.tmp baseline/packages.x86_64.tmp2 baseline/packages.x86_64.tmp3
+	cat baseline/packages.x86_64
 
 
 # Ensure SSH keys have correct permissions
