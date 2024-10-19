@@ -124,13 +124,9 @@ $(addprefix build-iso-,$(FEATURE_LEVELS)):
 build-iso:
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
 	@sed -i 's/^Architecture = .*$$/Architecture = $(FEATURE_LEVEL)/' baseline/pacman.conf
-	@docker run --privileged \
-		-v $(PWD)/baseline:/profile \
-		-v $(PWD)/customrepo:/customrepo \
-		-v $(PWD)/out:/profile/out \
-		ghcr.io/mcserverhosting-net/OS:latest \
-		mkarchiso -v -w /tmp -o /profile/out /profile -quiet=y
+	@mkarchiso -v -w /tmp -o baseline/out baseline -quiet=y
 	@mv baseline/out/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
+
 
 # Clean target
 clean:
