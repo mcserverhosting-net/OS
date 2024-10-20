@@ -83,7 +83,7 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             --entrypoint /bin/bash \
             ghcr.io/mcserverhosting-net/os:latest \
-            -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
+            -c "cd /workspace && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
 
       - name: List generated ISOs
         run: ls -lh baseline/out/*.iso
@@ -113,7 +113,7 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             --entrypoint /bin/bash \
             ghcr.io/mcserverhosting-net/os:latest \
-            -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
+            -c "cd /workspace && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
 
       - name: List generated ISOs
         run: ls -lh baseline/out/*.iso
