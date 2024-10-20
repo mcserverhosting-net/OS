@@ -11,7 +11,7 @@ NTP_SERVER_IP = 192.168.67.1
 LINUX ?= linux-lts
 
 # Feature levels
-FEATURE_LEVELS = x86-64-v2 x86-64-v3
+FEATURE_LEVELS = x86-64-v3
 
 # Kubernetes version
 K8S_VERSION ?= $(shell curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt | tr -d 'v')
