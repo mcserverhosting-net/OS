@@ -7,13 +7,13 @@ SigLevel    = Required DatabaseOptional
 LocalFileSigLevel = Optional
 
 [core-{{FEATURE_LEVEL}}]
-Server = https://cdn.alhp.dev/$repo/os/$arch/
+Server = https://alhp.krautflare.de/$repo/os/$arch/
 
 [core]
 Include = /etc/pacman.d/mirrorlist
 
 [extra-{{FEATURE_LEVEL}}]
-Server = https://cdn.alhp.dev/$repo/os/$arch/
+Server = https://alhp.krautflare.de/$repo/os/$arch/
 
 [extra]
 Include = /etc/pacman.d/mirrorlist
@@ -22,7 +22,7 @@ Include = /etc/pacman.d/mirrorlist
 Include = /etc/pacman.d/mirrorlist
 
 [multilib-{{FEATURE_LEVEL}}]
-Server = https://cdn.alhp.dev/$repo/os/$arch/
+Server = https://alhp.krautflare.de/$repo/os/$arch/
 
 [multilib]
 Include = /etc/pacman.d/mirrorlist
