@@ -40,6 +40,13 @@ jobs:
           fi
           echo "::set-output name=tag_name::$tag_name"
 
+      - name: Set Unique Build ID
+        id: set-build-id
+        run: |
+          BUILD_ID=$(uuidgen)
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+
+
   build-and-push-docker-image:
     runs-on: ubuntu-latest
     needs: get-k8s-version
@@ -78,6 +85,7 @@ jobs:
           FEATURE_LEVELS: x86-64-v2
           ENABLE_NVIDIA: ${{ github.event.inputs.enable_nvidia || '0' }}
           ENABLE_AMD: ${{ github.event.inputs.enable_amd || '0' }}
+          BUILD_ID: ${{ needs.get-k8s-version.outputs.BUILD_ID }}
         run: |
           docker run --privileged \
             -e K8S_VERSION=$K8S_VERSION \
@@ -87,7 +95,7 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             --entrypoint /bin/bash \
             ghcr.io/mcserverhosting-net/os:latest \
-            -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
+            -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD BUILD_ID=$BUILD_ID"
 
       - name: List generated ISOs
         run: ls -lh baseline/out/*.iso
@@ -112,6 +120,7 @@ jobs:
           FEATURE_LEVELS: x86-64-v3
           ENABLE_NVIDIA: ${{ github.event.inputs.enable_nvidia || '0' }}
           ENABLE_AMD: ${{ github.event.inputs.enable_amd || '0' }}
+          BUILD_ID: ${{ needs.get-k8s-version.outputs.BUILD_ID }}
         run: |
           docker run --privileged \
             -e K8S_VERSION=$K8S_VERSION \
@@ -121,7 +130,7 @@ jobs:
             -v ${{ github.workspace }}:/workspace \
             --entrypoint /bin/bash \
             ghcr.io/mcserverhosting-net/os:latest \
-            -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD"
+            -c "cd /workspace && make clean && make K8S_VERSION=$K8S_VERSION FEATURE_LEVELS=$FEATURE_LEVELS ENABLE_NVIDIA=$ENABLE_NVIDIA ENABLE_AMD=$ENABLE_AMD BUILD_ID=$BUILD_ID"
 
       - name: List generated ISOs
         run: ls -lh baseline/out/*.iso
