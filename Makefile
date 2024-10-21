@@ -130,7 +130,6 @@ $(addprefix build-iso-,$(FEATURE_LEVELS)):
 # Build the ISO using Docker
 build-iso: pacman-conf
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
-	# Ensure the pacman.conf has the correct Architecture
 	@mkdir -p baseline/out/tmp
 	@mkarchiso -v -w /tmp/mkarchiso -o baseline/out/tmp baseline -quiet=y
 	@mv baseline/out/tmp/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso

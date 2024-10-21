@@ -20,8 +20,5 @@ RUN yay -S --noconfirm alhp-keyring alhp-mirrorlist
 
 USER root
 
-RUN gpg --recv-keys 0D4D2FDAF45468F3DDF59BEDE3D0D2CD3952E298
-RUN rm -r /etc/pacman.d/gnupg/ && pacman-key --init && pacman-key --populate
-
 # Set the entrypoint (optional)
 ENTRYPOINT ["mkarchiso"]
