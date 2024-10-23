@@ -6,7 +6,7 @@ echo "[INFO] Initializing the script. Enabling sshd service."
 systemctl enable --now sshd
 
 # Check if placeholders are present in kubeadm.conf.yaml
-if grep -q '\${TOKEN}' /etc/kubeadm/kubeadm.conf.yaml; then
+if grep -q '\{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
   echo "[INFO] Placeholders detected in kubeadm.conf.yaml. Extracting DHCP options."
   
   # Extract custom DHCP options
