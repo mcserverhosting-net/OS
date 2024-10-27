@@ -7,12 +7,15 @@ systemctl enable --now sshd
 
 # Check if placeholders are present in kubeadm.conf.yaml
 if grep -q '\{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
-  echo "[INFO] Placeholders detected in kubeadm.conf.yaml. Extracting DHCP options."
+  echo "[INFO] Placeholders detected in kubeadm.conf.yaml. Getting from k8s.lan."
     
-  # Extracting custom DHCP options 224, 225, and 226
-  TOKEN=$(nmcli -g DHCP4.OPTION | grep 'custom-option-224' | awk -F'custom-option-224:' '{print $2}' | tr -d '"')
-  CERT_HASH=$(nmcli -g DHCP4.OPTION | grep 'custom-option-225' | awk -F'custom-option-225:' '{print $2}' | tr -d '"')
-  API_ADDRESS=$(nmcli -g DHCP4.OPTION | grep 'custom-option-226' | awk -F'custom-option-226:' '{print $2}' | tr -d '"')
+  # Base URL for API server
+  BASE_URL="http://k8s.lan"
+
+  # Fetching each file and storing its contents in a variable
+  API_ADDRESS=$(curl -s "${BASE_URL}/apiServerEndpoint")
+  CERT_HASH=$(curl -s "${BASE_URL}/certHash")
+  TOKEN=$(curl -s "${BASE_URL}/token")
     
   echo "[INFO] TOKEN: $TOKEN"
   echo "[INFO] CERT_HASH: $CERT_HASH"
