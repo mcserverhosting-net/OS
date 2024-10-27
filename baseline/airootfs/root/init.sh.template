@@ -8,15 +8,12 @@ systemctl enable --now sshd
 # Check if placeholders are present in kubeadm.conf.yaml
 if grep -q '\{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
   echo "[INFO] Placeholders detected in kubeadm.conf.yaml. Extracting DHCP options."
-  
-  # Extract custom DHCP options
-  # Use dhclient to get the options
-  dhclient -d -sf /usr/bin/dhclient-script
-  
-  TOKEN=$(nmcli -g DHCP4.OPTION | grep 'option-224' | awk -F'option-224:' '{print $2}' | tr -d '"')
-  CERT_HASH=$(nmcli -g DHCP4.OPTION | grep 'option-225' | awk -F'option-225:' '{print $2}' | tr -d '"')
-  API_ADDRESS=$(nmcli -g DHCP4.OPTION | grep 'option-226' | awk -F'option-226:' '{print $2}' | tr -d '"')
-  
+    
+  # Extracting custom DHCP options 224, 225, and 226
+  TOKEN=$(nmcli -g DHCP4.OPTION | grep 'custom-option-224' | awk -F'custom-option-224:' '{print $2}' | tr -d '"')
+  CERT_HASH=$(nmcli -g DHCP4.OPTION | grep 'custom-option-225' | awk -F'custom-option-225:' '{print $2}' | tr -d '"')
+  API_ADDRESS=$(nmcli -g DHCP4.OPTION | grep 'custom-option-226' | awk -F'custom-option-226:' '{print $2}' | tr -d '"')
+    
   echo "[INFO] TOKEN: $TOKEN"
   echo "[INFO] CERT_HASH: $CERT_HASH"
   echo "[INFO] API_ADDRESS: $API_ADDRESS"
