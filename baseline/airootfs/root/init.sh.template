@@ -6,9 +6,9 @@ echo "[INFO] Initializing the script. Enabling sshd service."
 systemctl enable --now sshd
 
 # Check if placeholders are present in kubeadm.conf.yaml
-if grep -q '\{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
+if grep -q '{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
   echo "[INFO] Placeholders detected in kubeadm.conf.yaml. Getting from k8s.lan."
-    
+
   # Base URL for API server
   BASE_URL="http://k8s.lan"
 
@@ -23,7 +23,7 @@ if grep -q '\{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
   
   # If any of the variables are empty, exit with an error
   if [ -z "$TOKEN" ] || [ -z "$CERT_HASH" ] || [ -z "$API_ADDRESS" ]; then
-    echo "[ERROR] Missing DHCP options. Exiting."
+    echo "[ERROR] Missing cluster options. Exiting."
     exit 1
   fi
   
