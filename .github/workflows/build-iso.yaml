@@ -153,7 +153,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.get-k8s-version.outputs.TAG_NAME }}
           files: artifacts/**/*.iso
           prerelease: ${{ github.event_name == 'schedule' || github.event_name == 'push' }}
         env:
