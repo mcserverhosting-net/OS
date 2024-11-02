@@ -4,6 +4,7 @@ set -e
 #ENABLE_SSH
 echo "[INFO] Initializing the script. Enabling sshd service."
 systemctl enable --now sshd
+sleep 20s
 
 # Check if placeholders are present in kubeadm.conf.yaml
 if grep -q '{{TOKEN}}' /etc/kubeadm/kubeadm.conf.yaml; then
@@ -102,6 +103,8 @@ fi
 # Mount the disk to /mnt and /var/lib/kubelet
 mount "$DISK" /mnt
 mkdir -p /mnt/tmp
+mkdir -p /mnt/big
+mkdir -p /mnt/store #local path prov
 mkdir -p /var/lib/kubelet
 mount "$DISK" /var/lib/kubelet
 
