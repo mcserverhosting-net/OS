@@ -27,7 +27,7 @@ Welcome to the MCSH-OS project! This ISO provides a ready-to-use, ephemeral Arch
 
 ## Overview
 
-This project provides a lightweight, customizable ISO for quickly adding worker nodes to a Kubernetes cluster. By booting from this ISO, nodes can automatically join a cluster using predefined DHCP options, eliminating the need for manual configuration.
+This project provides a lightweight, customizable ISO for quickly adding worker nodes to a Kubernetes cluster. By booting from this ISO, nodes can automatically join a cluster using predefined values from an HTTP server, eliminating the need for manual configuration.
 
 Originally developed by our hosting service to manage nodes at scale, this ISO is ideal for environments where ephemeral worker nodes are beneficial, such as test clusters, CI/CD pipelines, or dynamic scaling scenarios.
 
@@ -55,54 +55,23 @@ You don't need to build the ISO yourself unless you want to customize it. You ca
 
    Visit the [Releases](https://github.com/mcserverhosting-net/OS/releases) page and download the latest ISO artifact.
 
-2. **Set Up DHCP Options**:
+2. **Set Up HTTP Options**:
 
-   Configure your DHCP server to provide the necessary options for the nodes to auto-join your Kubernetes cluster. See [DHCP Options for Auto-Join](#dhcp-options-for-auto-join) below.
+   Configure an HTTP server to provide the necessary options for the nodes to auto-join your Kubernetes cluster. See [HTTP Options for Auto-Join](#http-options-for-auto-join) below.
 
 3. **Boot the Node**:
 
    Boot your machine using the downloaded ISO (via USB, PXE, or virtual machine). The node will automatically format the first available disk, load necessary kernel modules, and join your Kubernetes cluster.
 
-### DHCP Options for Auto-Join
+### HTTP Options for Auto-Join
 
-To enable nodes to automatically join your Kubernetes cluster, configure your DHCP server with the following options:
+To enable nodes to automatically join your Kubernetes cluster, configure your HTTP server to have the following files:
 
-| Option Code | Name                        | Description                                                |
+| Path | Name                        | Description                                                |
 |-------------|-----------------------------|------------------------------------------------------------|
-| **1**       | Subnet Mask                 | Defines the subnet mask.                                   |
-| **3**       | Router                      | Specifies the default gateway.                             |
-| **6**       | Domain Name Servers         | Lists DNS servers.                                         |
-| **15**      | Domain Name                 | Sets the domain name.                                      |
-| **42**      | NTP Servers                 | Specifies NTP servers.                                     |
-| **66**      | TFTP Server Name            | TFTP server for network booting (if used).                 |
-| **67**      | Bootfile Name               | Name of the bootfile (if PXE booting).                     |
-| **119**     | Domain Search               | Specifies domain search list for DNS resolution.           |
-| **249**     | Kubeadm API Endpoint        | Custom option for kubeadm API endpoint (e.g., `API_ADDRESS`). |
-| **250**     | Kubeadm Token               | Custom option for kubeadm token (e.g., `TOKEN`).           |
-| **251**     | Kubeadm CA Cert Hash        | Custom option for kubeadm CA certificate hash (`CERTHASH`). |
-| **252**     | Node Labels                 | Custom option for Kubernetes node labels (`NODE_LABELS`).  |
-
-**Note**: Options 249-252 are custom DHCP options that you need to define on your DHCP server to pass the kubeadm configuration parameters to the booting nodes.
-
-#### Example ISC DHCP Server Configuration
-
-```dhcpd.conf
-option space custom;
-option custom.api-address code 249 = text;
-option custom.token code 250 = text;
-option custom.ca-cert-hash code 251 = text;
-option custom.node-labels code 252 = text;
-subnet 192.168.1.0 netmask 255.255.255.0 {
-  range 192.168.1.100 192.168.1.200;
-  option routers 192.168.1.1;
-  option domain-name-servers 8.8.8.8;
-  option custom.api-address "your-api-server:6443";
-  option custom.token "your-kubeadm-token";
-  option custom.ca-cert-hash "sha256:your-ca-cert-hash";
-  option custom.node-labels "node-role.kubernetes.io/worker=true";
-}
-```
-
+| /token       | Token                | The token for kubeadm join.                                   |
+| /apiServerEndpoint      | API Server Endpoint                     | The API Address and port for your kubernetes cluster.                             |
+| /certHash       | CA Cert Hash        | The CA Cert Hash for your cluster.                                         |
 ## Customization
 
 ### Building from Prebuilt Docker Image
