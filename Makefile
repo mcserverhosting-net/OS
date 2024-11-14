@@ -8,7 +8,7 @@ NODE_LABELS ?= net.mcserverhosting.node/ephemeral=true,kubernetes.io/os=MCSH
 NTP_SERVER_IP = 192.168.67.1
 
 # Kernel version to use
-LINUX ?= linux-lts
+LINUX ?= linux
 
 # Feature levels
 FEATURE_LEVELS = x86-64-v3
