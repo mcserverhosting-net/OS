@@ -108,6 +108,7 @@ mkdir -p /mnt/containers/imagestore
 mkdir -p /mnt/containers/localstore
 mkdir -p /mnt/containers/root
 mkdir -p /mnt/containers/runroot
+mkdir -p /mnt/containers/big
 mkdir -p /mnt/crio/keys
 mkdir -p /mnt/kubelet
 
