@@ -1,7 +1,5 @@
 [Unit]
-Description=Run script at startup after network becomes reachable
-Requires=network.target
-After=network.target
+Description=Run script at startup
 
 [Service]
 Type=simple

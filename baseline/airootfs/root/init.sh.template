@@ -102,13 +102,16 @@ fi
 
 # Mount the disk to /mnt and /var/lib/kubelet
 mount "$DISK" /mnt
-mkdir -p /mnt/tmp
-mkdir -p /mnt/big
-mkdir -p /mnt/store #local path prov
-mkdir -p /var/lib/kubelet
-mount "$DISK" /var/lib/kubelet
+mkdir -p /mnt/containers/runroot
+mkdir -p /mnt/containers/graphroot
+mkdir -p /mnt/containers/imagestore
+mkdir -p /mnt/containers/localstore
+mkdir -p /mnt/containers/root
+mkdir -p /mnt/containers/runroot
+mkdir -p /mnt/crio/keys
+mkdir -p /mnt/kubelet
 
-echo "[INFO] Disk mounted to /mnt and /var/lib/kubelet"
+echo "[INFO] Disk mounted to /mnt"
 
 export UUID=$(cat /etc/machine-id)
 
