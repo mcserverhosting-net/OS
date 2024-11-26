@@ -18,7 +18,7 @@ K8S_VERSION ?= $(shell curl -s https://storage.googleapis.com/kubernetes-release
 
 # Packages
 NVIDIA_PACKAGES_LIST = nvidia-dkms nvidia-container-toolkit
-AMD_PACKAGES_LIST = amdgpu-pro-installer-debug rocm-hip-sdk rocm-opencl-sdk radeontop
+AMD_PACKAGES_LIST = hipblas rocm-smi-lib clblast rocm-hip-sdk rocm-opencl-sdk 
 UNIX_TOOLS_LIST = openssh nano vim vi curl wget htop bpytop btop
 
 ENABLE_NVIDIA ?= 0
