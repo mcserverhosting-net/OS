@@ -21,9 +21,17 @@ NVIDIA_PACKAGES_LIST = nvidia-dkms nvidia-container-toolkit
 AMD_PACKAGES_LIST = amdgpu-pro-installer-debug rocm-hip-sdk rocm-opencl-sdk radeontop
 UNIX_TOOLS_LIST = openssh nano vim vi curl wget htop bpytop btop
 
-
 ENABLE_NVIDIA ?= 0
 ENABLE_AMD ?= 0
+
+# Determine ISO suffix based on enabled features
+ISO_SUFFIX :=
+ifeq ($(ENABLE_NVIDIA),1)
+    ISO_SUFFIX +=-NVIDIA
+endif
+ifeq ($(ENABLE_AMD),1)
+    ISO_SUFFIX +=-AMD
+endif
 
 # Kernel modules to load
 KERNEL_MODULES = br_netfilter ip6_tables ip_tables ip6table_mangle ip6table_raw ip6table_filter xt_socket erofs
@@ -132,7 +140,7 @@ build-iso: pacman-conf
 	@echo "Building ISO for FEATURE_LEVEL=$(FEATURE_LEVEL)"
 	@mkdir -p baseline/out/tmp
 	@mkarchiso -v -w /tmp/mkarchiso -o baseline/out/tmp baseline -quiet=y
-	@mv baseline/out/tmp/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL).iso
+	@mv baseline/out/tmp/*.iso baseline/out/MCSHOS-$(K8S_VERSION)-$(FEATURE_LEVEL)$(ISO_SUFFIX).iso
 	@rm -rf /tmp/mkarchiso/*
 	@rm -rf /var/cache/pacman
 
